@@ -1,7 +1,9 @@
 const  express  = require("express");
+const cors = require('cors');
 const { chats } = require("./data/data");
 
 const app = express();
+app.use(cors());
 
 app.get("/", (req, res) => {
     res.send("Hello world");
