@@ -1,9 +1,13 @@
 const  express  = require("express");
 const cors = require('cors');
 const { chats } = require("./data/data");
+const { DB_connect } = require("./config/db");
+const env = require("dotenv").config();
 
 const app = express();
+
 app.use(cors());
+DB_connect();
 
 app.get("/", (req, res) => {
     res.send("Hello world");
@@ -18,6 +22,6 @@ app.get("/api/chat/:chatId", (req, res) => {
     res.send(chat);
 })
 
-app.listen(8080, () => {
-    console.log("listening on port 8080");
+app.listen(process.env.PORT, () => {
+    console.log(`listening on port ${process.env.PORT}`);
 })
