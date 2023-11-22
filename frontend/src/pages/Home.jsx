@@ -27,7 +27,7 @@ function Home() {
       borderWidth="1px"
       >
         <p style={{display:"flex", justifyContent: "center", fontSize: "1.5rem"}}>
-          Talk-A-Tive
+        Pre-Transcendence
         </p>
       </Box>
     </Flex>
