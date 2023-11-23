@@ -42,7 +42,7 @@ const Login = () => {
             </FormControl>
             <Button w="100%" colorScheme='teal' onClick={handleSubmitFn}>Submit</Button>
             <Button w="100%"
-                onClick={() => {setEmail("guest@app.com");setPassword("guestPassword");}}
+                onClick={() => {setEmail("guest@app.com");setPassword("urMomIsGay");}}
                 >Guest Login</Button>
             </VStack>
     )

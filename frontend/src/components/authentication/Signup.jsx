@@ -1,5 +1,7 @@
-import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, VStack } from '@chakra-ui/react'
+import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, VStack, useToast } from '@chakra-ui/react'
 import React, { useState } from 'react'
+
+import axios from "axios";
 
 const Signup = () => {
     const [name, setName] = useState("");
@@ -8,9 +10,40 @@ const Signup = () => {
     const [avatar, setAvatar] = useState("");
 
     const [isVisible, setIsVisible] = useState(false); //password visibility
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmitFn = () => {
-        alert(name);
+    const toast = useToast()
+
+    const handleSubmitFn = async() => {
+        setLoading(true);
+        if(!name || !email || !password || !avatar)
+        {
+            setLoading(false);
+            return toast({
+                title: 'Please fill all required fields.',
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+            })
+        }
+        try {
+            const response = await axios.post("http://localhost:8080/api/user/", {name, email, password, avatar});
+            setLoading(false);
+            return toast({
+                title: "Account Created Successfully",
+                description: "Please SignIn with your newly created account",
+                status: 'success',
+                duration: 5000,
+                isClosable: true,
+            })
+        } catch (error) {
+            return toast({
+                title: error.response.data.message,
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+            })
+        }
     }
     return (
         <VStack>
@@ -53,7 +86,7 @@ const Signup = () => {
                     type='url'
                 />
             </FormControl>
-            <Button w="100%" colorScheme='teal' onClick={handleSubmitFn}>Submit</Button>
+            <Button w="100%" colorScheme='teal' isLoading={loading} onClick={handleSubmitFn}>Submit</Button>
         </VStack>
     )
 }
