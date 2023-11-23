@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, VStack, useToast } from '@chakra-ui/react'
+import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, VStack, flattenTokens, useToast } from '@chakra-ui/react'
 import React, { useState } from 'react'
 
 import axios from "axios";
@@ -10,15 +10,15 @@ const Signup = () => {
     const [avatar, setAvatar] = useState("");
 
     const [isVisible, setIsVisible] = useState(false); //password visibility
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const toast = useToast()
 
     const handleSubmitFn = async() => {
-        setLoading(true);
+        setIsLoading(true);
         if(!name || !email || !password || !avatar)
         {
-            setLoading(false);
+            setIsLoading(false);
             return toast({
                 title: 'Please fill all required fields.',
                 status: 'error',
@@ -28,7 +28,8 @@ const Signup = () => {
         }
         try {
             const response = await axios.post("http://localhost:8080/api/user/", {name, email, password, avatar});
-            setLoading(false);
+            setIsLoading(false);
+            setEmail("");setName("");setPassword(""),setAvatar("");
             return toast({
                 title: "Account Created Successfully",
                 description: "Please SignIn with your newly created account",
@@ -37,6 +38,7 @@ const Signup = () => {
                 isClosable: true,
             })
         } catch (error) {
+            setIsLoading(false);
             return toast({
                 title: error.response.data.message,
                 status: 'error',
@@ -53,6 +55,7 @@ const Signup = () => {
                     placehoder= 'Enter Your Name'
                     onChange = {(e) => setName(e.target.value)}
                     type='text'
+                    value={name}
                 />
             </FormControl>
             <FormControl isRequired id='formEmail'>
@@ -61,6 +64,7 @@ const Signup = () => {
                     placehoder= 'Enter Your Email'
                     onChange = {(e) => setEmail(e.target.value)}
                     type='email'
+                    value={email}
                 />
             </FormControl>
             <FormControl isRequired id='formPassword'>
@@ -70,6 +74,7 @@ const Signup = () => {
                     placehoder= 'Enter Your Password'
                     onChange = {(e) => setPassword(e.target.value)}
                     type= {isVisible ? "text" : "password"}
+                    value={password}
                     />
                     <InputRightElement width="4.5rem">
                         <Button colorScheme='teal' variant='outline' h="1.75rem" size="sm" onClick={() => {setIsVisible(!isVisible)}}>
@@ -84,9 +89,10 @@ const Signup = () => {
                     placehoder= 'Enter Your Avatar'
                     onChange = {(e) => setAvatar(e.target.value)}
                     type='url'
+                    value={avatar}
                 />
             </FormControl>
-            <Button w="100%" colorScheme='teal' isLoading={loading} onClick={handleSubmitFn}>Submit</Button>
+            <Button w="100%" colorScheme='teal' isLoading={isLoading} onClick={handleSubmitFn}>Submit</Button>
         </VStack>
     )
 }
