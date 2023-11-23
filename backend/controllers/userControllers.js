@@ -1,10 +1,10 @@
 const { generateToken } = require("../config/jwt");
 const User = require("../models/userModel");
+const { hashPasswordFn, comparePasswordsFn } = require("../config/hash");
 
 const registerUser = async(req, res) => {
     const {name, email, password, avatar} = req.body;
-
-    if(!name || !email || !password) {
+    if(!name || !email || !password || !avatar) {
         res.status(400);
         throw new Error("All fields are required");
     }
@@ -15,8 +15,9 @@ const registerUser = async(req, res) => {
             res.status(400);
             throw new Error("User Already exists");
         }
-    
-        const newUser = await User.create({ name, email, password, avatar });
+
+        const new_password = await hashPasswordFn(password) //hash password before saving it
+        const newUser = await User.create({ name, email, password: new_password, avatar });
         if (!newUser) {
             res.status(500);
             throw new Error("Error occured couldn't save user");
@@ -29,8 +30,23 @@ const registerUser = async(req, res) => {
     } catch (error) {
         res
         .status(500)
-        .json({ message: "An Error occured during registerUser: " + error.message });
+        .json({ message: "An Error occured during registerUser: " + error });
     }
 }
 
-module.exports = { registerUser };
+const authUser = async (req, res) => {
+    const {email, password} = req.body;
+
+    const user = await User.findOne({ email });
+    if(!user || !(await comparePasswordsFn(password, user.password)))
+        return res.status(401).json({ message: "Wrong Cerdentials user not found"});
+    return res.status(200).json({
+        _id : user._id,
+        name : user.name,
+        email: user.email,
+        avatar: user.avatar,
+        token: generateToken(user._id)
+    })
+} 
+
+module.exports = { registerUser, authUser };

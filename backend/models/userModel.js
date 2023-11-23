@@ -11,13 +11,5 @@ const userShema = mongoose.Schema (
     { timestamps: true }
 )
 
-userShema.pre("save", async function (next) {
-    if(!this.isModified) {
-        next();
-    };
-    const salt = await bcryptjs.getSalt(10);
-    this.password = await bcryptjs.hash(this.password, salt);
-})
-
 const User = mongoose.model("User", userShema);
 module.exports = User ;

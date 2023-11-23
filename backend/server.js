@@ -4,6 +4,7 @@ const { chats } = require("./data/data");
 const { DB_connect } = require("./config/db");
 const env = require("dotenv").config();
 const userRoutes = require("./routes/userRoutes");
+const { notFound } = require("./middlewares/notFound");
 const app = express();
 
 DB_connect();
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
 })
 
 app.use("/api/user", userRoutes);
+app.use(notFound);
 
 app.listen(process.env.PORT, () => {
     console.log(`listening on port ${process.env.PORT}`);
