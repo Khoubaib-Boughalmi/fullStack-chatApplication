@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
 const verifyAuth = async(req, res, next) => {
-    console.log("im heeere");   
     if(req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
         try {
             const token = req.headers.authorization.split(" ")[1];
