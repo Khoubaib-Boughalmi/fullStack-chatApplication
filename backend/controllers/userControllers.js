@@ -33,16 +33,20 @@ const registerUser = async(req, res) => {
 const authUser = async (req, res) => {
     const {email, password} = req.body;
 
-    const user = await User.findOne({ email });
-    if(!user || !(await comparePasswordsFn(password, user.password)))
-        return res.status(401).json({ message: "Wrong Cerdentials user not found"});
-    return res.status(200).json({
-        _id : user._id,
-        name : user.name,
-        email: user.email,
-        avatar: user.avatar,
-        token: generateToken(user._id)
-    })
+    try {
+        const user = await User.findOne({ email });
+        if(!user || !(await comparePasswordsFn(password, user.password)))
+            return res.status(401).json({ message: "Wrong Cerdentials user not found"});
+        return res.status(200).json({
+            _id : user._id,
+            name : user.name,
+            email: user.email,
+            avatar: user.avatar,
+            token: generateToken(user._id)
+        })
+    } catch (error) {
+        
+    }
 } 
 
 const allUsers = async(req, res) => {
@@ -52,8 +56,14 @@ const allUsers = async(req, res) => {
         { "email":{ $regex: req.query.search, $options: 'i' }}
         ] 
     } : {};
-    const users = await User.find(customQuery).find({_id: { $ne: req.user._id }});
-    console.log(users);
+    try {
+        const users = await User.find(customQuery).find({_id: { $ne: req.user._id }});
+        if(users.length === 0)
+            return res.status(404).json({message: "No Users Found"});
+        return res.status(200).json(users);
+    } catch (error) {
+        return res.status(400).json({message: "Search Users Error", error: error.message});
+    }
 }
 
 module.exports = { registerUser, authUser, allUsers };

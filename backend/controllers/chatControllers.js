@@ -29,7 +29,7 @@ const getOrCreateOneToOneChat = async(req, res, _next) => {
             const populatedChat = await Chat.populate(createdChat, {path: "users", select: "-password"});
             res.status(200).json(populatedChat);
         } catch (error) {
-            res.status(400).json(error);
+            return res.status(400).json({message: "get/create new 1to1 chat Err", error: error.message});
         }
     }
 }
@@ -47,7 +47,7 @@ const getAllCurrentUserChats = async(req, res, _next) => {
         return res.status(200).json(allChats);
     } catch (error) {
         console.log(error);
-        return res.status(400).json({error});
+        return res.status(400).json({message: "get all Current User's Chat Err", error: error.message});
     }
 }
 
@@ -76,27 +76,29 @@ const createGroupChat = async(req, res, _next) => {
         console.log(populatedNewGroupChat);
         return res.status(200).json(populatedNewGroupChat);
     } catch (error) {
-        return res.status(400).json(error);
+        return res.status(400).json({message: "Create GroupChat Err", error: error.message});
     }
 
 }
 
 const renameGroup = async(req, res, _next) => {
-    const { newGroupName, groupId, userId } = req.body;
-    if(!newGroupName || !groupId || !userId)
-        return res.status(400).json("newGroupName and userId are required");
+    const { newGroupName, groupId } = req.body;
+    
+    if(!newGroupName || !groupId )
+        return res.status(400).json("newGroupName and groupId are required");
     
     try {
         let groupInfo = await Chat.findById(groupId);
         groupInfo = await Chat.populate(groupInfo, {path: "groupAdmin", select: "-password"});
-        console.log(groupInfo);
+        
         if(!groupInfo.groupAdmin._id.equals(req.user._id))
             return res.status(401).json("Unauthorized: Only group admin can update group name");
+        
         groupInfo.chatName = newGroupName;
         groupInfo.save();
         return res.status(200).json(groupInfo);
     } catch (error) {
-        console.log(error);
+        return res.status(400).json({message: "Rename Group Err", error: error.message});
     }
 }   
 

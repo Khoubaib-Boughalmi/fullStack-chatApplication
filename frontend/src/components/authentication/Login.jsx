@@ -35,6 +35,8 @@ const Login = () => {
                 isClosable: true,
             })
             setIsLoading(false);
+            console.log(user);
+            localStorage.setItem('token', user.data.token);
             navigate("/api/chats");
         } catch (error) {
             toast({
