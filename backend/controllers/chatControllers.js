@@ -81,4 +81,23 @@ const createGroupChat = async(req, res, _next) => {
 
 }
 
-module.exports = { getOrCreateOneToOneChat, getAllCurrentUserChats, createGroupChat };
+const renameGroup = async(req, res, _next) => {
+    const { newGroupName, groupId, userId } = req.body;
+    if(!newGroupName || !groupId || !userId)
+        return res.status(400).json("newGroupName and userId are required");
+    
+    try {
+        let groupInfo = await Chat.findById(groupId);
+        groupInfo = await Chat.populate(groupInfo, {path: "groupAdmin", select: "-password"});
+        console.log(groupInfo);
+        if(!groupInfo.groupAdmin._id.equals(req.user._id))
+            return res.status(401).json("Unauthorized: Only group admin can update group name");
+        groupInfo.chatName = newGroupName;
+        groupInfo.save();
+        return res.status(200).json(groupInfo);
+    } catch (error) {
+        console.log(error);
+    }
+}   
+
+module.exports = { getOrCreateOneToOneChat, getAllCurrentUserChats, createGroupChat, renameGroup };
