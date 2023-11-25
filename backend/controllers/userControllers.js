@@ -45,4 +45,15 @@ const authUser = async (req, res) => {
     })
 } 
 
-module.exports = { registerUser, authUser };
+const allUsers = async(req, res) => {
+    const customQuery = req.query.search ?
+    { $or: [
+        { "name": { $regex: req.query.search, $options: 'i' }},
+        { "email":{ $regex: req.query.search, $options: 'i' }}
+        ] 
+    } : {};
+    const users = await User.find(customQuery).find({_id: { $ne: req.user._id }});
+    console.log(users);
+}
+
+module.exports = { registerUser, authUser, allUsers };
