@@ -1,7 +1,8 @@
 import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, VStack, useToast} from '@chakra-ui/react';
-import React, { useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
+import { useChatContext } from '../../context/chatProvider';
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -13,6 +14,12 @@ const Login = () => {
     const toast = useToast()
 
     const navigate = useNavigate();
+    const {user} = useChatContext();
+    useEffect(() => {
+        if(user) {
+            navigate("/chat");
+        }
+    }, [navigate]);
     
     const handleSubmitFn = async() => {
         if(!email || !password) {
@@ -37,7 +44,7 @@ const Login = () => {
             setIsLoading(false);
             console.log(user);
             localStorage.setItem('userInfo', JSON.stringify(user.data));   
-            navigate("/api/chats");
+            navigate("/chat");
         } catch (error) {
             toast({
                 title: "Wrong Credentials",

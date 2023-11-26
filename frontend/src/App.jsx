@@ -1,18 +1,21 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ChakraProvider } from '@chakra-ui/react'
+import { ChatProvider }  from './context/chatProvider'
 import Home  from "./pages/Home";
-import { Chats } from "./pages/Chats";
+import Chats  from "./pages/Chats";
 
 function App() {
 
   return (
     <ChakraProvider>
       <Router>
-        <Routes>
-          <Route path="/" element={ <Home/> }></Route>
-          <Route path="/chats" element={ <Chats/> }></Route>
-        </Routes>
+        <ChatProvider>
+          <Routes>
+            <Route path="/" element={ <Home/> }></Route>
+            <Route path="/chat" element={ <Chats/> }></Route>
+          </Routes>
+        </ChatProvider>
       </Router>
     </ChakraProvider>
     )
