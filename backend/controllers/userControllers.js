@@ -26,11 +26,11 @@ const registerUser = async(req, res) => {
     } catch (error) {
         res
         .status(500)
-        .json({ message: "An Error occured during registerUser: " + error });
+        .json({ message: "Register User Err: ", error: error.message  });
     }
 }
 
-const authUser = async (req, res) => {
+const loginUser = async (req, res) => {
     const {email, password} = req.body;
 
     try {
@@ -45,11 +45,15 @@ const authUser = async (req, res) => {
             token: generateToken(user._id)
         })
     } catch (error) {
-        
+        return res.status(400).json({message: "Login User Error", error: error.message});
     }
 } 
 
-const allUsers = async(req, res) => {
+/*
+    Search for a specific user, if no userId is provided return all users in
+    DB except the current logged in user
+*/
+const findUsers = async(req, res) => {
     const customQuery = req.query.search ?
     { $or: [
         { "name": { $regex: req.query.search, $options: 'i' }},
@@ -66,4 +70,4 @@ const allUsers = async(req, res) => {
     }
 }
 
-module.exports = { registerUser, authUser, allUsers };
+module.exports = { registerUser, loginUser, findUsers };

@@ -1,10 +1,10 @@
 //api/user
 const express = require("express");
-const { registerUser, authUser, allUsers } = require("../controllers/userControllers");
+const { registerUser, loginUser, findUsers } = require("../controllers/userControllers");
 const { verifyAuth } = require("../middlewares/authMiddleware");
 const router = express.Router();
 
-router.route("/").post(registerUser).get(verifyAuth, allUsers);
-router.post("/login", authUser);
+router.route("/").post(registerUser).get(verifyAuth, findUsers);
+router.post("/login", loginUser);
 
 module.exports = router;
