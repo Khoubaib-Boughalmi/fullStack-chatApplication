@@ -124,10 +124,32 @@ const addUserToGroup = async(req, res, _next) => {
     }
 }
 
+const removeUserFromGroup = async(req, res, _next) => {
+    const {userId, groupId} = req.body;
+    
+    if(!userId || !groupId)
+        return res.status(400).json({message: "Please Provide groupId and userId"});
+
+    try {
+        const group = await Chat.findById(groupId);
+        const isMember = group.users.some(user => user.equals(userId));
+        if (!isMember) {
+            return res.status(403).json({ message: "can't remove user: User is Not a member of the group" });
+        }
+        group.users = group.users.filter(item => !item.equals(userId));
+        await group.save();
+        return res.status(200).json(group);
+    } catch (error) {
+        return res.status(400).json({message: "Remove User From Group Err", error: error.message});
+    }
+
+}
+
 module.exports = {
     getOrCreateOneToOneChat,
     getAllCurrentUserChats,
     createGroup,
     renameGroup,
-    addUserToGroup
+    addUserToGroup,
+    removeUserFromGroup
 };
