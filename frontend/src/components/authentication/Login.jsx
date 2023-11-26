@@ -36,7 +36,7 @@ const Login = () => {
             })
             setIsLoading(false);
             console.log(user);
-            localStorage.setItem('token', user.data.token);
+            localStorage.setItem('userInfo', JSON.stringify(user.data));   
             navigate("/api/chats");
         } catch (error) {
             toast({
@@ -53,6 +53,7 @@ const Login = () => {
         setEmail("guest@app.com");
         setPassword("urMomIsGay");
     }
+
     return (
         <VStack>
             <FormControl isRequired id='formEmail'>
