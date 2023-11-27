@@ -24,7 +24,9 @@ import { useState } from "react";
 import axios from "axios";
 import { useToast } from "@chakra-ui/toast";
 import { useChatContext } from "../../context/chatProvider";
+import { ChatListLoading } from "../chats/ChatListLoading";
 import ProfileModal from "../miscellaneous/profileModel"
+import UserListItem from "../user/UserListItem";
 
 function SideDrawer() {
 	const { user } = useChatContext();
@@ -42,7 +44,35 @@ function SideDrawer() {
 		localStorage.removeItem("userInfo");
 		navigate("/");
 	}
-	const handleSearchFn = () => {
+	const handleSearchFn = async() => {
+		if(!search) {
+			return toast({
+				title: "Please provide a User name",
+				description: "can't search an empty user",
+				status: 'warning',
+				duration: 2000,
+				isClosable: true,
+				position: "top-right"
+			})
+		}
+		setLoading(true);
+		try {
+			const conf = {
+				headers: {
+					Authorization : `Bearer ${user.token}`
+				}
+			}
+			console.log(user.token);
+			const { data } = await axios.get(`http://localhost:8080/api/user/?search=${search}`, conf);
+			console.log(data);
+			setLoading(false);
+			setSearchResult(data);
+		} catch (error) {
+			throw new Error(error);
+		}
+	}
+
+	const accessChatFn = (userId) => {
 	}
 
 	return (
@@ -73,7 +103,7 @@ function SideDrawer() {
 						
 						<BellIcon fontSize="2xl" m={1} />
 						</MenuButton>
-						{/*<MenuList pl={2}></MenuList>*/}
+						<MenuList pl={2}>Hello world</MenuList>
 					</Menu>
 					<Menu>
 					<MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>
@@ -108,25 +138,24 @@ function SideDrawer() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-              <Button onClick={handleSearchFn	}>Go</Button> 
+              <Button onClick={handleSearchFn}>Go</Button> 
             </Box>
             {loading ? (
-            ""//   <ChatLoading />
-            ) : (
-              searchResult?.map((user) => (
-                // <UserListItem
-                //   key={user._id}
-                //   user={user}
-                //   handleFunction={() => accessChat(user._id)}
-                // />
-				""
-              ))
+				<ChatListLoading />
+			) : (
+				searchResult?.map((user) => (
+					<UserListItem
+					key={user._id}
+					user={user}
+					handleFunction={() => accessChatFn(user._id)}
+					/>
+				))
             )}
             {loadingChat && <Spinner ml="auto" display="flex" />}
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-		</>
+	</>
 	);
 }
 
