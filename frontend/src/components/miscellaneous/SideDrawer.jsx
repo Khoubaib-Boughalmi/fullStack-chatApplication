@@ -29,7 +29,7 @@ import ProfileModal from "../miscellaneous/profileModel"
 import UserListItem from "../user/UserListItem";
 
 function SideDrawer() {
-	const { user } = useChatContext();
+	const { user, selectedChats, setSelectedChats, chats, setChats } = useChatContext();
 	const navigate = useNavigate();
 
 	const [search, setSearch] = useState("");
@@ -62,14 +62,20 @@ function SideDrawer() {
 					Authorization : `Bearer ${user.token}`
 				}
 			}
-			console.log(user.token);
 			const { data } = await axios.get(`http://localhost:8080/api/user/?search=${search}`, conf);
-			console.log(data);
-			setLoading(false);
 			setSearchResult(data);
 		} catch (error) {
-			throw new Error(error);
+			setSearchResult([]);
+			toast({
+				title: "Couldn't find any user with the provided data",
+				description: "Please provide a valid user",
+				status: 'warning',
+				duration: 2000,
+				isClosable: true,
+				position: "top-right"
+			})
 		}
+		setLoading(false);
 	}
 
 	const accessChatFn = (userId) => {

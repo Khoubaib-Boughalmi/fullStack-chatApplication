@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 const ChatContext = createContext();
 
 export const ChatProvider = ({children}) => {
+    const [selectedChats, setSelectedChats] = useState();
+    const [chats, setChats] = useState();
     const navigate = useNavigate();
     let user = JSON.parse(localStorage.getItem("userInfo"));
     useEffect(() => {
@@ -14,7 +16,7 @@ export const ChatProvider = ({children}) => {
     }, [navigate]);
     
     return (
-        <ChatContext.Provider value={{user}} > {children} </ChatContext.Provider>
+        <ChatContext.Provider value={{user, selectedChats, setSelectedChats, chats, setChats}} > {children} </ChatContext.Provider>
     )
 }
 
