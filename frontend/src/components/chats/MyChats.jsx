@@ -5,6 +5,8 @@ import { Box, Stack, Text } from "@chakra-ui/layout";
 import { useToast } from "@chakra-ui/toast";
 import { Button } from "@chakra-ui/react";
 import { ChatListLoading } from "./ChatListLoading";
+import { Avatar } from "@chakra-ui/avatar";
+
 
 import { useChatContext } from "../../context/chatProvider"
 import axios from 'axios';
@@ -84,10 +86,18 @@ const MyChats = () => {
               py={2}
               borderRadius="lg"
               key={chat._id}
+              display="flex"
+              alignItems="center"
             >
-              <Text>
+              <Avatar
+                mr={4}
+                size="sm"
+                cursor="pointer"
+                src={getSender(user._id, chat.users).avatar}
+              />
+              <Text fontWeight="bold">
                 {!chat.isGroupChat
-                  ? getSender(user._id, chat.users)
+                  ? getSender(user._id, chat.users).name
                   : chat.chatName}
               </Text>
             </Box>
