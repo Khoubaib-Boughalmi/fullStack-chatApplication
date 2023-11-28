@@ -13,10 +13,6 @@ DB_connect();
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => {
-    res.send("Hello world");
-})
-
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
 

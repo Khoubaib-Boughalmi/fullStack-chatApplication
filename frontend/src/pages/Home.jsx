@@ -17,7 +17,7 @@ function Home() {
     <Container maxW="xl" centerContent >
     <Flex w="100%">
       <Box
-      d="flex"
+      display="flex"
       justifyContent="center"
       p={3}
       bg="white"

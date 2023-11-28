@@ -2,6 +2,7 @@ import { Button } from "@chakra-ui/button";
 import { useDisclosure } from "@chakra-ui/hooks";
 import { Input } from "@chakra-ui/input";
 import { Box, Text } from "@chakra-ui/layout";
+import { Spinner } from "@chakra-ui/spinner";
 import {
 	Menu,
 	MenuButton,
@@ -29,7 +30,7 @@ import ProfileModal from "../miscellaneous/profileModel"
 import UserListItem from "../user/UserListItem";
 
 function SideDrawer() {
-	const { user, selectedChats, setSelectedChats, chats, setChats } = useChatContext();
+	const { user, selectedChat, setSelectedChat, chats, setChats } = useChatContext();
 	const navigate = useNavigate();
 
 	const [search, setSearch] = useState("");
@@ -44,6 +45,7 @@ function SideDrawer() {
 		localStorage.removeItem("userInfo");
 		navigate("/");
 	}
+
 	const handleSearchFn = async() => {
 		if(!search) {
 			return toast({
@@ -57,12 +59,12 @@ function SideDrawer() {
 		}
 		setLoading(true);
 		try {
-			const conf = {
+			const config = {
 				headers: {
-					Authorization : `Bearer ${user.token}`
+					Authorization: `Bearer ${user.token}`
 				}
 			}
-			const { data } = await axios.get(`http://localhost:8080/api/user/?search=${search}`, conf);
+			const { data } = await axios.get(`http://localhost:8080/api/user/?search=${search}`, config);
 			setSearchResult(data);
 		} catch (error) {
 			setSearchResult([]);
@@ -78,7 +80,33 @@ function SideDrawer() {
 		setLoading(false);
 	}
 
-	const accessChatFn = (userId) => {
+	const accessChatFn = async(userId) => {
+		const config = {
+			headers: {
+				"Content-type": "application/json", 
+				Authorization: `Bearer: ${user.token}`
+			}
+		}
+		setLoadingChat(true);
+		try {
+			const { data } = await axios.post("http://localhost:8080/api/chat", {userId}, config);
+
+			if(!chats.find((chat) => {chat._id === data._id})) //add the current selected chat to the global chat UI
+				setChats([data, ...chats]);
+
+			setSelectedChat(data);
+			setLoadingChat(false);
+			onClose();
+		} catch (error) {
+			toast({
+				title: "Invalid Chat",
+				description: "Please provide a valid user",
+				status: 'warning',
+				duration: 2000,
+				isClosable: true,
+				position: "top-right"
+			})
+		}
 	}
 
 	return (
