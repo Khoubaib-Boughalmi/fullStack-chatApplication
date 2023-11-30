@@ -10,6 +10,7 @@ import { Avatar } from "@chakra-ui/avatar";
 
 import { useChatContext } from "../../context/chatProvider"
 import axios from 'axios';
+import GroupChatModal from "../miscellaneous/GroupChatModal";
 
 const MyChats = () => {
   const { user, selectedChat, setSelectedChat, chats, setChats  } = useChatContext();
@@ -54,7 +55,7 @@ const MyChats = () => {
       alignItems="center"
     >
       My Chats
-      {/* <GroupChatModal> */}
+      <GroupChatModal>
         <Button
           display="flex"
           fontSize={{ base: "17px", md: "10px", lg: "17px" }}
@@ -62,7 +63,7 @@ const MyChats = () => {
         >
           New Group Chat
         </Button>
-      {/* </GroupChatModal> */}
+      </GroupChatModal>
     </Box>
     <Box
       display="flex"

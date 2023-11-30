@@ -46,16 +46,12 @@ function SideDrawer() {
 		navigate("/");
 	}
 
-	const handleSearchFn = async() => {
-		if(!search) {
-			return toast({
-				title: "Please provide a User name",
-				description: "can't search an empty user",
-				status: 'warning',
-				duration: 2000,
-				isClosable: true,
-				position: "top-right"
-			})
+	const handleSearchFn = async(value) => {
+
+		value = value.trim()
+		if(!value) {
+			setSearchResult([]);
+			return ;
 		}
 		setLoading(true);
 		try {
@@ -64,7 +60,7 @@ function SideDrawer() {
 					Authorization: `Bearer ${user.token}`
 				}
 			}
-			const { data } = await axios.get(`http://localhost:8080/api/user/?search=${search}`, config);
+			const { data } = await axios.get(`http://localhost:8080/api/user/?search=${value}`, config);
 			setSearchResult(data);
 		} catch (error) {
 			setSearchResult([]);
@@ -169,10 +165,8 @@ function SideDrawer() {
               <Input
                 placeholder="Search by name or email"
                 mr={2}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => handleSearchFn(e.target.value)}
               />
-              <Button onClick={handleSearchFn}>Go</Button> 
             </Box>
             {loading ? (
 				<ChatListLoading />
