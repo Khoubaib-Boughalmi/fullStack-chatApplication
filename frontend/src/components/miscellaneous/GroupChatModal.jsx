@@ -31,13 +31,28 @@ const { user, chats, setChats } = useChatContext();
 
 const handleSubmitFn = () => {}
 
-const handleAddUserFn = () => {}
+const handleAddUserFn = (userToAdd) => {
+	if (selectedUsers.includes(userToAdd)) {
+		return toast({
+			title: `User already added`,
+			description: "Please provide a different user",
+			status: 'warning',
+			duration: 1000,
+			isClosable: true,
+			position: "top-right"
+		})
+	}
+	setSelectedUsers([...selectedUsers, userToAdd]);
+}
 
 const handleSearchFn = async(value) => {
 	value = value.trim();
-	if(!value)
-		return ;
 
+	if(!value) {
+		setSearchResult([]);
+		return ;
+	}
+	
 	const config = {
 		headers: {
 			Authorization: `Bearer ${user.token}`
@@ -57,7 +72,8 @@ const handleSearchFn = async(value) => {
 			duration: 2000,
 			isClosable: true,
 			position: "top-right"
-		})	}
+		})
+	}
 	setLoading(false);
 }
 
@@ -92,13 +108,26 @@ return (
 				onChange={(e) => handleSearchFn(e.target.value)}
 				/>
 			</FormControl>
+			{
+				selectedUsers?.map((user) => (
+					<UserBageItem 
+						key={user._id}
+						user={user}
+						handleFunction={()=>alert(user)}
+					/>
+				))
+			}
+			<Box w="100%">
 				{
 					loading ?
 					<span>loading...</span>
 					:
-					searchResult?.slice(0, 4).map((user) => 
-					<UserListItem  key={user._id} user={user} handleFunction={handleAddUserFn}/>
-				)}
+					searchResult.length ? 
+					(searchResult?.slice(0, 4).map((user) => 
+					<UserListItem  key={user._id} user={user} handleFunction={()=> handleAddUserFn(user)}/>))
+					: ""
+				}
+			</Box>
 			</ModalBody>
 			<ModalFooter>
 			<Button onClick={handleSubmitFn} colorScheme="blue">
