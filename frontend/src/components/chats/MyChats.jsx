@@ -32,7 +32,8 @@ const MyChats = ({fetchAgain}) => {
 
     getCurrentUsersChat();
   }, [])
-  
+
+
   return (
     <Box
     display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
@@ -79,10 +80,10 @@ const MyChats = ({fetchAgain}) => {
         <Stack overflowY="scroll">
           {chats.map((chat) => (
             <Box
-              onClick={() => setSelectedChat(chat)}
+              onClick={() => {setSelectedChat(chat);}}
               cursor="pointer"
-              bg={selectedChat === chat._id ? "#38B2AC" : "#E8E8E8"}
-              color={selectedChat === chat._id ? "white" : "black"}
+              bg={selectedChat?._id === chat._id ? "#38B2AC" : "#E8E8E8"}
+              color={selectedChat?._id === chat._id ? "white" : "black"}
               px={3}
               py={2}
               borderRadius="lg"

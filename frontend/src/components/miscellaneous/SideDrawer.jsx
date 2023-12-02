@@ -91,7 +91,7 @@ function SideDrawer() {
 			if(!chats.find((chat) => chat._id == data._id)) {
 				setChats([data, ...chats]);
 			} 
-			setSelectedChat(data._id);
+			setSelectedChat(data);
 			setLoadingChat(false);
 			onClose();
 		} catch (error) {

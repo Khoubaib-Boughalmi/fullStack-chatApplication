@@ -5,30 +5,30 @@ import { IconButton, Spinner, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { ArrowBackIcon } from "@chakra-ui/icons";
-
+import { getSender } from "../../helpers/getSender";
 
 import { useChatContext } from "../../context/chatProvider";
 const ENDPOINT = "http://localhost:8080"; // "https://test.herokuapp.com"; -> After deployment
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
-const [messages, setMessages] = useState([]);
-const [loading, setLoading] = useState(false);
-const [newMessage, setNewMessage] = useState("");
-const [socketConnected, setSocketConnected] = useState(false);
-const [typing, setTyping] = useState(false);
-const [istyping, setIsTyping] = useState(false);
-const toast = useToast();
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [newMessage, setNewMessage] = useState("");
+  const [socketConnected, setSocketConnected] = useState(false);
+  const [typing, setTyping] = useState(false);
+  const [istyping, setIsTyping] = useState(false);
+  const toast = useToast();
 
 
-const { selectedChat, setSelectedChat, user, notification, setNotification } = useChatContext();
+  const { selectedChat, setSelectedChat, user, notification, setNotification } = useChatContext();
 
-    const typingHandlerFn = () => {}
-    
+  const typingHandlerFn = () => { }
+
   return (
     <>
       {selectedChat ? (
         <>
-            <Text
+          <Text
             fontSize={{ base: "28px", md: "30px" }}
             pb={3}
             px={2}
@@ -37,14 +37,18 @@ const { selectedChat, setSelectedChat, user, notification, setNotification } = u
             display="flex"
             justifyContent={{ base: "space-between" }}
             alignItems="center"
-            >
-                <IconButton
-                    display={{ base: "flex", md: "none" }}
-                    icon={<ArrowBackIcon />}
-                    onClick={() => setSelectedChat("")}
-                />
-            
-            </Text>
+          >
+            <IconButton
+              display={{ base: "flex", md: "none" }}
+              icon={<ArrowBackIcon />}
+              onClick={() => setSelectedChat("")}
+            />
+            {console.log(selectedChat)}
+            {
+                selectedChat?.isGroupChat ?
+                <>{selectedChat?.chatName}</> : getSender(user._id, selectedChat?.users)?.name
+            }
+          </Text>
           <Box
             display="flex"
             flexDir="column"
