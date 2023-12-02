@@ -12,7 +12,7 @@ import { useChatContext } from "../../context/chatProvider"
 import axios from 'axios';
 import GroupChatModal from "../miscellaneous/GroupChatModal";
 
-const MyChats = () => {
+const MyChats = ({fetchAgain}) => {
   const { user, selectedChat, setSelectedChat, chats, setChats  } = useChatContext();
 
   const getCurrentUsersChat = async () => {
@@ -40,7 +40,7 @@ const MyChats = () => {
     alignItems="center"
     p={3}
     bg="white"
-    w={{ base: "100%", md: "31%" }}
+    w={{ base: "100%", md: "23%" }}
     borderRadius="lg"
     borderWidth="1px"
   >
