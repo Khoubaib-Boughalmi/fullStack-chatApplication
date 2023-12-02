@@ -52,7 +52,6 @@ const handleSubmitFn = async() => {
 			groupUsers: JSON.stringify(selectedUsers.map((u) => u._id)),
 			groupAdmin: user._id
 		}, config);
-		console.log(data);
 		toast({
 			title: `Group Created Successfully`,
 			status: 'success',
@@ -62,6 +61,8 @@ const handleSubmitFn = async() => {
 		})
 		setSelectedChat(data._id);
 		setChats([data, ...chats]);
+		setSelectedUsers([]);
+		onClose();
 	} catch (error) {
 		console.log(error);
 		return toast({
@@ -81,16 +82,20 @@ const handleRemoveUserFn = (user) => {
 }
 
 const handleAddUserFn = (userToAdd) => {
-	if (selectedUsers.includes(userToAdd)) {
-		return toast({
-			title: `User already added`,
-			description: "Please provide a different user",
-			status: 'warning',
-			duration: 1000,
-			isClosable: true,
-			position: "top-right"
-		})
+	for (let index = 0; index < selectedUsers.length; index++) {
+		if (selectedUsers[index]._id == userToAdd._id) {
+			setSearchResult([]);
+			return toast({
+				title: `User already added`,
+				description: "Please provide a different user",
+				status: 'warning',
+				duration: 1000,
+				isClosable: true,
+				position: "top-right"
+			})
+		}
 	}
+
 	setSelectedUsers([...selectedUsers, userToAdd]);
 	setSearchResult([]);
 	setSearch("");
