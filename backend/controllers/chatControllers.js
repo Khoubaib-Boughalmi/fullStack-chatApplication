@@ -58,8 +58,8 @@ const createGroup = async(req, res, _next) => {
         return res.status(400).json("Please provide at least 3 users and a valid group name");
         
     const users = JSON.parse(groupUsers);
-    if(users.length < 3) //2 or less
-        return res.status(400).json("Please provide at least 3 users");
+    if(users.length < 2) //2 or less
+        return res.status(400).json("Please provide at least 2 users");
     users.push(req.user._id);
 
     const newGroupChatData = {

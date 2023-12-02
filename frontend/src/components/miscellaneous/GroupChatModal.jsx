@@ -17,6 +17,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useChatContext } from "../../context/chatProvider";
 import  UserListItem  from "../user/UserListItem"
+import UserBadgeItem from "../user/UserBadgeItem";
 
 const GroupChatModal = ({ children }) => {
 const { isOpen, onOpen, onClose } = useDisclosure();
@@ -27,9 +28,57 @@ const [searchResult, setSearchResult] = useState([]);
 const [loading, setLoading] = useState(false);
 const toast = useToast();
 
-const { user, chats, setChats } = useChatContext();
+const { user, chats, setChats,selectedChat, setSelectedChat } = useChatContext();
 
-const handleSubmitFn = () => {}
+const handleSubmitFn = async() => {
+	if(!groupChatName || !selectedUsers) {
+		return toast({
+			title: `Please provide both Group Name and Users`,
+			description: "Group Name and Users are required",
+			status: 'error',
+			duration: 1000,
+			isClosable: true,
+			position: "top-right"
+		})
+	}
+	const config = {
+		headers: {
+			Authorization: `Bearer ${user.token}`
+		}
+	}
+	try {
+		const { data } = await axios.post("http://localhost:8080/api/chat/group", {
+			groupName: groupChatName,
+			groupUsers: JSON.stringify(selectedUsers.map((u) => u._id)),
+			groupAdmin: user._id
+		}, config);
+		console.log(data);
+		toast({
+			title: `Group Created Successfully`,
+			status: 'success',
+			duration: 1000,
+			isClosable: true,
+			position: "bottom"
+		})
+		setSelectedChat(data._id);
+		setChats([data, ...chats]);
+	} catch (error) {
+		console.log(error);
+		return toast({
+			title: `Something Went Wrong`,
+			description: "Please try Again",
+			status: 'error',
+			duration: 1000,
+			isClosable: true,
+			position: "top-right"
+		})
+	}
+	
+}
+
+const handleRemoveUserFn = (user) => {
+	setSelectedUsers(selectedUsers.filter((u) => (u._id !== user._id)))
+}
 
 const handleAddUserFn = (userToAdd) => {
 	if (selectedUsers.includes(userToAdd)) {
@@ -43,11 +92,14 @@ const handleAddUserFn = (userToAdd) => {
 		})
 	}
 	setSelectedUsers([...selectedUsers, userToAdd]);
+	setSearchResult([]);
+	setSearch("");
 }
 
 const handleSearchFn = async(value) => {
+	setSearch(value);
 	value = value.trim();
-
+	
 	if(!value) {
 		setSearchResult([]);
 		return ;
@@ -105,18 +157,19 @@ return (
 				<Input
 				placeholder="Add Users eg: John, Piyush, Jane"
 				mb={1}
+				value={search}
 				onChange={(e) => handleSearchFn(e.target.value)}
 				/>
 			</FormControl>
-			{
-				selectedUsers?.map((user) => (
-					<UserBageItem 
+			<Box w="100%" display="flex" justifyContent="center">
+				{selectedUsers?.map((user) => (
+						<UserBadgeItem 
 						key={user._id}
 						user={user}
-						handleFunction={()=>alert(user)}
+						handleFunction={() => handleRemoveUserFn(user)}
 					/>
-				))
-			}
+				))}
+			</Box>
 			<Box w="100%">
 				{
 					loading ?
