@@ -1,4 +1,6 @@
 export const getSender = (loggedInUserId, users) => {
-    const user = users.filter((user)=> user._id !== loggedInUserId);
-    return user[0];
+    if(loggedInUserId && users){
+        const user = users.filter((user)=> user._id !== loggedInUserId);
+        return user[0];
+    }
 }

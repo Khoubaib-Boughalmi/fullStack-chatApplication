@@ -88,8 +88,43 @@ const UpdateGroupModal = ({ children }) => {
     }
 
     const handleRemoveUserFn = (user) => {
-        setSelectedUsers(selectedUsers.filter((u) => (u._id !== user._id)))
+        if (selectedUsers.length > 2) {
+            setSelectedUsers(selectedUsers.filter((u) => (u._id !== user._id)))
+        }
+        else {
+            toast({
+                title: `Group must have at least 3 members`,
+                description: "At least 3 users per group",
+                status: 'error',
+                duration: 1000,
+                isClosable: true,
+                position: "top-right"
+            })
+        }
     }
+
+    const removeSelfFromGroup = () => {
+        if (selectedUsers.length > 2) {
+            const newUsersList = selectedUsers.filter((u) => (u._id !== user._id));
+            console.log(newUsersList);
+            setSelectedUsers([]);
+            setSelectedUsers(newUsersList);
+            console.log(selectedUsers);
+            return (1);
+        }
+        else {
+            toast({
+                title: `Group must have at least 3 members`,
+                description: "At least 3 users per group",
+                status: 'error',
+                duration: 1000,
+                isClosable: true,
+                position: "top-right"
+            })
+            return (0);
+        }
+    }
+
     const handleUpdateNameFn = async () => {
         setNewGroupName(newGroupName.trim.length);
         if (newGroupName) {
@@ -117,14 +152,14 @@ const UpdateGroupModal = ({ children }) => {
         setNewGroupName("");
     }
 
-    const handleUpdateGroupMembersFn = async() => {
+    const handleUpdateGroupMembersFn = async () => {
         let usersIds = [];
 
-        selectedUsers.map((user) => {
-            usersIds.push(user._id);
+        selectedUsers.map((u) => {
+            usersIds.push(u._id);
         })
 
-        if(usersIds.length < 2) {
+        if (usersIds.length < 2) {
             return toast({
                 title: `Group must have at least 3 members`,
                 description: "At least 3 users per group",
@@ -141,7 +176,6 @@ const UpdateGroupModal = ({ children }) => {
                 }
             }
             usersIds = JSON.stringify(usersIds);
-            console.log(usersIds);
             const { data } = await axios.put(
                 "http://localhost:8080/api/chat/group/members",
                 {
@@ -157,7 +191,18 @@ const UpdateGroupModal = ({ children }) => {
             console.log(error);
         }
     }
-    
+
+    const handleLeaveGroupFn = () => {
+        // setSelectedUsers(selectedUsers.filter((u) => (u._id !== user._id)));
+        if (removeSelfFromGroup()) {
+            console.log("sdasdasdsadasd", selectedUsers);
+            handleUpdateGroupMembersFn();
+            const newChats = chats.filter((chat) => (chat._id !== selectedChat._id));
+            setChats([...newChats]);
+            onClose();
+        }
+    }
+
     const handleSubmitFn = async () => {
         handleUpdateNameFn();
         handleUpdateGroupMembersFn();
@@ -184,7 +229,7 @@ const UpdateGroupModal = ({ children }) => {
                         display="flex"
                         justifyContent="center"
                     >
-                        {user.name}
+                        {selectedChat.chatName}
                     </ModalHeader>
                     <ModalCloseButton />
                     <ModalBody
@@ -194,11 +239,11 @@ const UpdateGroupModal = ({ children }) => {
                         justifyContent="start"
                     >
                         <Box w="100%" display="flex" justifyContent="center">
-                            {selectedUsers?.map((user) => (
-                                <UserBadgeItem
-                                    key={user._id}
-                                    user={user}
-                                    handleFunction={() => handleRemoveUserFn(user)}
+                            {selectedUsers?.map((u) => (
+                                (user._id != u._id) && <UserBadgeItem
+                                    key={u._id}
+                                    user={u}
+                                    handleFunction={() => handleRemoveUserFn(u)}
                                 />
                             ))}
                         </Box>
@@ -231,8 +276,7 @@ const UpdateGroupModal = ({ children }) => {
                         </Box>
                     </ModalBody>
                     <ModalFooter display="flex">
-                        <Button style={{ marginRight: "10px" }} bgColor="green" textColor="white" _hover="" onClick={handleSubmitFn}>Submit</Button>
-                        <Button bgColor="red" textColor="white" _hover="" onClick={handleSubmitFn}>Leave Group</Button>
+                        <Button bgColor="green" textColor="white" _hover="" onClick={handleSubmitFn}>Submit</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
