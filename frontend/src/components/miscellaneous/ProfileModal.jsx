@@ -45,7 +45,7 @@ const ProfileModal = ({ user, children }) => {
             <Image
               borderRadius="full"
               boxSize="150px"
-              src={user.avatar}
+              src={user.avatar ? user.avatar : "https://profile.intra.42.fr/images/default.png"}
               alt={user.name}
             />
             <Text

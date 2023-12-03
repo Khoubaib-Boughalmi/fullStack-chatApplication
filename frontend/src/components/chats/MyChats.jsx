@@ -48,14 +48,14 @@ const MyChats = ({fetchAgain}) => {
     <Box
       pb={3}
       px={3}
-      fontSize={{ base: "28px", md: "30px" }}
+      fontSize={{ base: "20px", md: "24px" }}
       fontFamily="Work sans"
       display="flex"
       w="100%"
       justifyContent="space-between"
       alignItems="center"
     >
-      My Chats
+      <span style={{marginRight:"10px"}}>Chats</span>
       <GroupChatModal>
         <Button
           display="flex"

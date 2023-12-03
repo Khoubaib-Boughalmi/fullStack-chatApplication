@@ -26,7 +26,7 @@ import axios from "axios";
 import { useToast } from "@chakra-ui/toast";
 import { useChatContext } from "../../context/chatProvider";
 import { ChatListLoading } from "../chats/ChatListLoading";
-import ProfileModal from "../miscellaneous/profileModel"
+import ProfileModal from "./ProfileModal"
 import UserListItem from "../user/UserListItem";
 
 function SideDrawer() {
@@ -46,12 +46,12 @@ function SideDrawer() {
 		navigate("/");
 	}
 
-	const handleSearchFn = async(value) => {
+	const handleSearchFn = async (value) => {
 
 		value = value.trim()
-		if(!value) {
+		if (!value) {
 			setSearchResult([]);
-			return ;
+			return;
 		}
 		setLoading(true);
 		try {
@@ -76,21 +76,21 @@ function SideDrawer() {
 		setLoading(false);
 	}
 
-	const accessChatFn = async(userId) => {
+	const accessChatFn = async (userId) => {
 		const config = {
 			headers: {
-				"Content-type": "application/json", 
+				"Content-type": "application/json",
 				Authorization: `Bearer: ${user.token}`
 			}
 		}
 		setLoadingChat(true);
 		try {
-			const { data } = await axios.post("http://localhost:8080/api/chat", {userId}, config);
+			const { data } = await axios.post("http://localhost:8080/api/chat", { userId }, config);
 
 			//add the current selected chat to the global chat UI
-			if(!chats.find((chat) => chat._id == data._id)) {
+			if (!chats.find((chat) => chat._id == data._id)) {
 				setChats([data, ...chats]);
-			} 
+			}
 			setSelectedChat(data);
 			setLoadingChat(false);
 			onClose();
@@ -120,73 +120,73 @@ function SideDrawer() {
 				borderWidth="1px"
 			>
 				<Tooltip label="Search Users to chat" hasArrow placement="bottom-end">
-				<Button variant="ghost" onClick={onOpen}>
-					<i className="fas fa-search"></i>
-					<Text display={{ base: "none", md: "flex" }} px={4}>
-					Search User
-					</Text>
-				</Button>
+					<Button variant="ghost" onClick={onOpen}>
+						<i className="fas fa-search"></i>
+						<Text display={{ base: "none", md: "flex" }} px={4}>
+							Search User
+						</Text>
+					</Button>
 				</Tooltip>
 				<Text fontSize="2xl" fontFamily="Work sans">
-				Pre-Transcendence
+					Pre-Transcendence
 				</Text>
 				<div>
 					<Menu>
 						<MenuButton p={1}>
-						
-						<BellIcon fontSize="2xl" m={1} />
+
+							<BellIcon fontSize="2xl" m={1} />
 						</MenuButton>
 						<MenuList pl={2}>Hello world</MenuList>
 					</Menu>
 					<Menu>
-					<MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>
-					<Avatar
-						size="sm"
-						cursor="pointer"
-						name={user.name}
-						src={user.avatar}
-					/>
-					</MenuButton>
-					<MenuList>
+						<MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>
+							<Avatar
+								size="sm"
+								cursor="pointer"
+								name={user.name}
+								src={user.avatar}
+							/>
+						</MenuButton>
+						<MenuList>
 
-					<ProfileModal user={user}>
-						<MenuItem>My Profile</MenuItem>{" "}
-					</ProfileModal>
-					<MenuDivider />
-					<MenuItem onClick={handleLogoutFn}>Logout</MenuItem>
-					</MenuList>
-				</Menu>
+							<ProfileModal user={user}>
+								<MenuItem>My Profile</MenuItem>{" "}
+							</ProfileModal>
+							<MenuDivider />
+							<MenuItem onClick={handleLogoutFn}>Logout</MenuItem>
+						</MenuList>
+					</Menu>
 				</div>
 			</Box>
 
 			<Drawer placement="left" onClose={onClose} isOpen={isOpen}>
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerHeader borderBottomWidth="1px">Search Users</DrawerHeader>
-          <DrawerBody>
-            <Box display="flex" pb={2}>
-              <Input
-                placeholder="Search by name or email"
-                mr={2}
-                onChange={(e) => handleSearchFn(e.target.value)}
-              />
-            </Box>
-            {loading ? (
-				<ChatListLoading />
-			) : (
-				searchResult?.map((user) => (
-					<UserListItem
-					key={user._id}
-					user={user}
-					handleFunction={() => accessChatFn(user._id)}
-					/>
-				))
-            )}
-            {loadingChat && <Spinner ml="auto" display="flex" />}
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
-	</>
+				<DrawerOverlay />
+				<DrawerContent>
+					<DrawerHeader borderBottomWidth="1px">Search Users</DrawerHeader>
+					<DrawerBody>
+						<Box display="flex" pb={2}>
+							<Input
+								placeholder="Search by name or email"
+								mr={2}
+								onChange={(e) => handleSearchFn(e.target.value)}
+							/>
+						</Box>
+						{loading ? (
+							<ChatListLoading />
+						) : (
+							searchResult?.map((user) => (
+								<UserListItem
+									key={user._id}
+									user={user}
+									handleFunction={() => accessChatFn(user._id)}
+								/>
+							))
+						)}
+						{loadingChat && <Spinner ml="auto" display="flex" />}
+					</DrawerBody>
+				</DrawerContent>
+			</Drawer>
+		</>
 	);
 }
 
