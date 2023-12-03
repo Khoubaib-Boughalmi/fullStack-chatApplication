@@ -1,4 +1,3 @@
-//api/user
 const express = require("express");
 const { registerUser, loginUser, findUsers } = require("../controllers/userControllers");
 const { verifyAuth } = require("../middlewares/authMiddleware");

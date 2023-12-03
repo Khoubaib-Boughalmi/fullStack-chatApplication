@@ -41,7 +41,7 @@ const getOrCreateOneToOneChat = async(req, res, _next) => {
 
 const getAllCurrentUserChats = async(req, res, _next) => {
     try {
-        const allChats = await Chat.find({users: req.user._id})
+        const allChats = await Chat.find({users: req.user?._id})
                         .populate("users", "-pasasword")
                         .populate("groupAdmin", "-pasasword") //if group chat
                         .populate("lastMessage")
