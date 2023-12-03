@@ -92,8 +92,8 @@ const renameGroup = async(req, res, _next) => {
         let groupInfo = await Chat.findById(groupId);
         groupInfo = await Chat.populate(groupInfo, {path: "groupAdmin", select: "-password"});
         
-        if(!groupInfo.groupAdmin._id.equals(req.user._id))
-            return res.status(401).json("Unauthorized: Only group admin can update group name");
+        // if(!groupInfo.groupAdmin._id.equals(req.user._id))
+        //     return res.status(401).json("Unauthorized: Only group admin can update group name");
 
         groupInfo.chatName = newGroupName;
         await groupInfo.save();
@@ -105,18 +105,23 @@ const renameGroup = async(req, res, _next) => {
 
 //TO DO: make sure only group members can add a user to the group
 //TO DO: check that the added user is a legit user
-const addUserToGroup = async(req, res, _next) => {
-    const {userId, groupId} = req.body;
+const updateGroupMembers = async(req, res, _next) => {
+    const {usersIds, groupId} = req.body;
 
-    if(!userId || !groupId)
-        return res.status(400).json({message: "Please Provide groupId and userId"});
+    if(!usersIds || !groupId)
+        return res.status(400).json({message: "Please Provide groupId and usersIds"});
     try {
+        console.log(usersIds);
         const group = await Chat.findById(groupId);
-        const isMember = group.users.some(user => user.equals(userId));
-        if (isMember) {
-            return res.status(403).json({ message: "User is already a member of the group" });
-        }
-        group.users.push(new ObjectId(userId));
+        // const isMember = group.users.some(user => user.equals(userId));
+        // if (isMember) {
+        //     return res.status(403).json({ message: "User is already a member of the group" });
+        // }
+        group.users = [];
+        let parsedUsersIds = JSON.parse(usersIds);
+        parsedUsersIds.map((userId) => {
+            group.users.push(new ObjectId(userId));
+        })
         await group.save();
         return res.status(200).json(group);
     } catch (error) {
@@ -150,6 +155,6 @@ module.exports = {
     getAllCurrentUserChats,
     createGroup,
     renameGroup,
-    addUserToGroup,
+    updateGroupMembers,
     removeUserFromGroup
 };

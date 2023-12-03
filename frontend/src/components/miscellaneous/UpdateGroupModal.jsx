@@ -32,7 +32,7 @@ const UpdateGroupModal = ({ children }) => {
     const [newGroupName, setNewGroupName] = useState("");
     const [loading, setLoading] = useState("");
 
-    const {user, setSelectedChat,selectedChat, chats, setChats} = useChatContext();
+    const { user, setSelectedChat, selectedChat, chats, setChats } = useChatContext();
     const toast = useToast();
 
     const handleAddUserFn = (userToAdd) => {
@@ -107,7 +107,7 @@ const UpdateGroupModal = ({ children }) => {
                     },
                     config
                 );
-                let tmpChats = chats.filter((chat) => (chat._id !== data._id)); 
+                let tmpChats = chats.filter((chat) => (chat._id !== data._id));
                 setChats([data, ...tmpChats]);
                 setSelectedChat(data);
             } catch (error) {
@@ -116,8 +116,51 @@ const UpdateGroupModal = ({ children }) => {
         }
         setNewGroupName("");
     }
+
+    const handleUpdateGroupMembersFn = async() => {
+        let usersIds = [];
+
+        selectedUsers.map((user) => {
+            usersIds.push(user._id);
+        })
+
+        if(usersIds.length < 2) {
+            return toast({
+                title: `Group must have at least 3 members`,
+                description: "At least 3 users per group",
+                status: 'error',
+                duration: 1000,
+                isClosable: true,
+                position: "top-right"
+            })
+        }
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${user.token}`
+                }
+            }
+            usersIds = JSON.stringify(usersIds);
+            console.log(usersIds);
+            const { data } = await axios.put(
+                "http://localhost:8080/api/chat/group/members",
+                {
+                    usersIds: usersIds,
+                    groupId: selectedChat._id
+                },
+                config
+            );
+            let tmpChats = chats.filter((chat) => (chat._id !== data._id));
+            setChats([data, ...tmpChats]);
+            setSelectedChat(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    
     const handleSubmitFn = async () => {
         handleUpdateNameFn();
+        handleUpdateGroupMembersFn();
         onClose();
     }
 
