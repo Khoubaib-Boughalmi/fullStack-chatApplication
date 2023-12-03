@@ -14,7 +14,6 @@ import GroupChatModal from "../miscellaneous/GroupChatModal";
 
 const MyChats = ({fetchAgain}) => {
   const { user, selectedChat, setSelectedChat, chats, setChats  } = useChatContext();
-
   const getCurrentUsersChat = async () => {
     const config = {
       headers: {
@@ -29,7 +28,6 @@ const MyChats = ({fetchAgain}) => {
     }
   }
   useEffect(() => {
-
     getCurrentUsersChat();
   }, [])
 
@@ -95,11 +93,11 @@ const MyChats = ({fetchAgain}) => {
                 mr={4}
                 size="sm"
                 cursor="pointer"
-                src={getSender(user._id, chat.users).avatar}
+                src={chat.isGroupChat ? chat.groupAvatar : getSender(user._id, chat.users)?.avatar}
               />
               <Text fontWeight="bold">
                 {!chat.isGroupChat
-                  ? getSender(user._id, chat.users).name
+                  ? getSender(user._id, chat.users)?.name
                   : chat.chatName}
               </Text>
             </Box>

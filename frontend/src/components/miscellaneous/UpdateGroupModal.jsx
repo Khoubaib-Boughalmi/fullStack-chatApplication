@@ -276,7 +276,7 @@ const UpdateGroupModal = ({ children }) => {
                         </Box>
                     </ModalBody>
                     <ModalFooter display="flex">
-                        <Button bgColor="green" textColor="white" _hover="" onClick={handleSubmitFn}>Submit</Button>
+                        <Button bgColor="#8cc68c" textColor="white" _hover="" onClick={handleSubmitFn}>Submit</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>

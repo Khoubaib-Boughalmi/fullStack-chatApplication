@@ -86,15 +86,18 @@ function SideDrawer() {
 		setLoadingChat(true);
 		try {
 			const { data } = await axios.post("http://localhost:8080/api/chat", { userId }, config);
-
+			
 			//add the current selected chat to the global chat UI
 			if (!chats.find((chat) => chat._id == data._id)) {
 				setChats([data, ...chats]);
 			}
+			console.log("asdgsiyeiuwryiuweyiruewyiruewyiruy");
+			console.log(chats);
 			setSelectedChat(data);
 			setLoadingChat(false);
 			onClose();
 		} catch (error) {
+			console.log(error);
 			toast({
 				title: "Invalid Chat",
 				description: "Please provide a valid user",

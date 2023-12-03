@@ -7,16 +7,18 @@ const ObjectId = require('mongoose').Types.ObjectId;
 
 const getOrCreateOneToOneChat = async(req, res, _next) => {
     const { userId } = req.body;
-
+    console.log("getOrCreateOneToOneChat");
     if (!userId) {
         res.status(400).json("userId is required");
     }
-    let chat = await Chat.find({'users' : {$all: [userId, req.user._id]}})
+    let chat = await Chat.find({'users' : {$all: [userId, req.user._id]}, isGroupChat: false})
                 .populate("users", "-password")
                 .populate("lastMessage");
     chat = await Chat.populate(chat, {path: "lastMessage.sender", select: "name avatar email"});
 
+    console.log(chat);
     if(chat.length) {
+        console.log("im geeeeeere")
         res.send(chat[0]);
     } else {
         const newChatData = {
@@ -53,8 +55,8 @@ const getAllCurrentUserChats = async(req, res, _next) => {
 }
 
 const createGroup = async(req, res, _next) => {
-    const { groupUsers, groupName } = req.body;
-    if(!groupUsers || !groupName)
+    const { groupUsers, groupName, groupAvatar } = req.body;
+    if(!groupUsers || !groupName || !groupAvatar)
         return res.status(400).json("Please provide at least 3 users and a valid group name");
         
     const users = JSON.parse(groupUsers);
@@ -64,6 +66,7 @@ const createGroup = async(req, res, _next) => {
 
     const newGroupChatData = {
         chatName: groupName,
+        groupAvatar: groupAvatar,
         isGroupChat: true,
         users: users,
         groupAdmin: req.user._id

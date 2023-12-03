@@ -24,6 +24,7 @@ const { isOpen, onOpen, onClose } = useDisclosure();
 const [groupChatName, setGroupChatName] = useState();
 const [selectedUsers, setSelectedUsers] = useState([]);
 const [search, setSearch] = useState("");
+const [avatar, setAvatar] = useState("");
 const [searchResult, setSearchResult] = useState([]);
 const [loading, setLoading] = useState(false);
 const toast = useToast();
@@ -50,7 +51,8 @@ const handleSubmitFn = async() => {
 		const { data } = await axios.post("http://localhost:8080/api/chat/group", {
 			groupName: groupChatName,
 			groupUsers: JSON.stringify(selectedUsers.map((u) => u._id)),
-			groupAdmin: user._id
+			groupAdmin: user._id,
+			groupAvatar: avatar
 		}, config);
 		toast({
 			title: `Group Created Successfully`,
@@ -62,6 +64,7 @@ const handleSubmitFn = async() => {
 		setSelectedChat(data._id);
 		setChats([data, ...chats]);
 		setSelectedUsers([]);
+		setAvatar("");
 		onClose();
 	} catch (error) {
 		console.log(error);
@@ -154,14 +157,22 @@ return (
 			<FormControl>
 				<Input
 				placeholder="Chat Name"
-				mb={3}
+				mb={2}
 				onChange={(e) => setGroupChatName(e.target.value)}
 				/>
 			</FormControl>
 			<FormControl>
 				<Input
+				placeholder="Group Avatar"
+				mb={2}
+				value={avatar}
+				onChange={(e) => setAvatar(e.target.value)}
+				/>
+			</FormControl>
+			<FormControl>
+				<Input
 				placeholder="Add Users eg: John, Piyush, Jane"
-				mb={1}
+				mb={2}
 				value={search}
 				onChange={(e) => handleSearchFn(e.target.value)}
 				/>
