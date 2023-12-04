@@ -14,11 +14,10 @@ const getOrCreateOneToOneChat = async(req, res, _next) => {
     let chat = await Chat.find({'users' : {$all: [userId, req.user._id]}, isGroupChat: false})
                 .populate("users", "-password")
                 .populate("lastMessage");
-    chat = await Chat.populate(chat, {path: "lastMessage.sender", select: "name avatar email"});
+    chat = await Chat.populate(chat, {path: "lastMessage.senderId", select: "name avatar email"});
 
     console.log(chat);
     if(chat.length) {
-        console.log("im geeeeeere")
         res.send(chat[0]);
     } else {
         const newChatData = {
@@ -41,12 +40,12 @@ const getOrCreateOneToOneChat = async(req, res, _next) => {
 
 const getAllCurrentUserChats = async(req, res, _next) => {
     try {
-        const allChats = await Chat.find({users: req.user?._id})
+        let allChats = await Chat.find({users: req.user?._id})
                         .populate("users", "-pasasword")
                         .populate("groupAdmin", "-pasasword") //if group chat
                         .populate("lastMessage")
                         .sort({updatedAt: -1})
-
+        allChats = await Chat.populate(allChats, {path: "lastMessage.senderId", select: "name avatar email"})
         return res.status(200).json(allChats);
     } catch (error) {
         console.log(error);
