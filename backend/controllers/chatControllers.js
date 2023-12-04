@@ -16,9 +16,8 @@ const getOrCreateOneToOneChat = async(req, res, _next) => {
                 .populate("lastMessage");
     chat = await Chat.populate(chat, {path: "lastMessage.senderId", select: "name avatar email"});
 
-    console.log(chat);
     if(chat.length) {
-        res.send(chat[0]);
+        return res.send(chat[0]);
     } else {
         const newChatData = {
             chatName: "sender",
@@ -29,7 +28,7 @@ const getOrCreateOneToOneChat = async(req, res, _next) => {
         try {
             const createdChat = await Chat.create(newChatData);
             const populatedChat = await Chat.populate(createdChat, {path: "users", select: "-password"});
-            res.status(200).json(populatedChat);
+            return res.status(200).json(populatedChat);
         } catch (error) {
             return res.status(400).json({message: "get/create new 1to1 chat Err", error: error.message});
         }

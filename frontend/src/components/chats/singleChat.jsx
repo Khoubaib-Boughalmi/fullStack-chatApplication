@@ -24,8 +24,75 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
 	const { selectedChat, setSelectedChat, user, notification, setNotification } = useChatContext();
 
-	const typingHandlerFn = () => { }
+	const typingHandlerFn = (e) => {
+		setNewMessage(e.target.value);
+	}
 
+	const fetchCurrentChatMessages = async() => {
+		if(!selectedChat) return ;
+		setLoading(true);
+		try {
+			const config = {
+				headers: {
+					Authorization: `Bearer ${user.token}`
+				}
+			}
+			const { data } = await axios.get(`http://localhost:8080/api/message/${selectedChat._id}`, config);
+			setMessages(data);
+		} catch (error) {
+			toast({
+				title: "Unable to fetch message",
+				description: "Please try again",
+				status: 'error',
+				duration: 1000,
+				isClosable: true,
+				position: "top-right"
+			})
+		}
+		setLoading(false);
+	}
+
+	const sendMessageFn = async (e) => {
+		if(newMessage.trim() == "")
+			return ;
+		if (!newMessage || e.key !== "Enter")
+			return;
+		setLoading(true);
+		try {
+			const config = {
+				headers: {
+					Authorization: `Bearer ${user.token}`
+				}
+			}
+			setNewMessage("");
+			const messageSent = await axios.post(
+				"http://localhost:8080/api/message",
+				{
+					"chatId": selectedChat._id,
+					"content": newMessage
+				},
+				config
+			);
+			setMessages([...messages, messageSent]);
+		} catch (error) {
+			console.log(error);
+			toast({
+				title: "Unable to send message",
+				description: "Please try again",
+				status: 'error',
+				duration: 1000,
+				isClosable: true,
+				position: "top-right"
+			})
+		}
+		setNewMessage("");
+		setLoading(false);
+	}
+
+	useEffect(() => {
+		fetchCurrentChatMessages();
+	}, [selectedChat])
+	
 	return (
 		<>
 			{selectedChat ? (
@@ -50,7 +117,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 								(
 									<>
 										<span>{selectedChat?.chatName}</span>
-										{console.log(user)}
 										<UpdateGroupModal />
 
 									</>
@@ -88,7 +154,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 						)}
 
 						<FormControl
-							onKeyDown={""}
+							onKeyDown={sendMessageFn}
 							id="first-name"
 							isRequired
 							mt={3}
@@ -109,8 +175,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 								variant="filled"
 								bg="#E0E0E0"
 								placeholder="Enter a message.."
-								value={newMessage}
 								onChange={typingHandlerFn}
+								value={newMessage}
 							/>
 						</FormControl>
 					</Box>
