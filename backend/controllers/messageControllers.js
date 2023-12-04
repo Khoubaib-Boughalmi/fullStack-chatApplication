@@ -27,4 +27,15 @@ const sendMessage = async (req, res) => {
     }
 }
 
-module.exports = { sendMessage };
+const getCurrentChatMessages = async(req, res) => {
+    try {
+        let messages = await Message.find({chatId: req.params.chatId})
+        .populate({path: "senderId", select: "name avatar email"} )
+        .populate({path: "chatId", select: ""} )
+        return res.status(200).json(messages);
+    } catch (error) {
+        return res.status(400).json({message: "get Current Chat Messages Err: ", error: error.message});
+    }
+}
+
+module.exports = { sendMessage, getCurrentChatMessages };
