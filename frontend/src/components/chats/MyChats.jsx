@@ -75,7 +75,7 @@ const MyChats = ({ fetchAgain }) => {
         overflowY="hidden"
       >
         {chats ? (
-          <Stack overflowY="scroll">
+          <Stack>
             {chats.map((chat) => (
               <div key={chat._id}>
                 <Box

@@ -138,6 +138,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 						h="100%"
 						borderRadius="lg"
 						overflowY="hidden"
+						background="transparent"
 					>
 						{loading ? (
 							<Spinner
@@ -181,7 +182,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 							</div>
 						)}
 
-						<FormControl
+						<div
 							onKeyDown={sendMessageFn}
 							id="first-name"
 							isRequired
@@ -205,7 +206,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 								onChange={typingHandlerFn}
 								value={newMessage}
 							/>
-						</FormControl>
+						</div>
 					</Box>
 				</>
 			) : (
