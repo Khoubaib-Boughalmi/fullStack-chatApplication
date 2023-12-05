@@ -6,11 +6,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { getSender } from "../../helpers/getSender";
+import { io } from "socket.io-client";
 
 import { useChatContext } from "../../context/chatProvider";
 import ProfileModal from "../miscellaneous/ProfileModal";
 import UpdateGroupModal from "../miscellaneous/UpdateGroupModal";
+
 const ENDPOINT = "http://localhost:8080"; // "https://test.herokuapp.com"; -> After deployment
+let server;
 
 import { MainContainer, ChatContainer, MessageList, Message, MessageGroup, Avatar, MessageInput } from '@chatscope/chat-ui-kit-react';
 
@@ -93,6 +96,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 	useEffect(() => {
 		fetchCurrentChatMessages();
 	}, [selectedChat])
+
+	useEffect(() => {
+		server = io(ENDPOINT);
+	}, [])
 
 	return (
 		<>
