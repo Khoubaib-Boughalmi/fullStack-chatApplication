@@ -60,7 +60,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 			return;
 		if (!newMessage || e.key !== "Enter")
 			return;
-		setLoading(true);
 		try {
 			const config = {
 				headers: {
@@ -68,7 +67,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 				}
 			}
 			setNewMessage("");
-			const messageSent = await axios.post(
+			const { data } = await axios.post(
 				"http://localhost:8080/api/message",
 				{
 					"chatId": selectedChat._id,
@@ -76,7 +75,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 				},
 				config
 			);
-			setMessages([...messages, messageSent]);
+			setMessages([...messages, data]);
 		} catch (error) {
 			console.log(error);
 			toast({
@@ -89,7 +88,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 			})
 		}
 		setNewMessage("");
-		setLoading(false);
 	}
 
 	useEffect(() => {
@@ -119,13 +117,13 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 							selectedChat?.isGroupChat ?
 								(
 									<>
-										<span>{selectedChat?.chatName}</span>
+										<span>{selectedChat?.chatName.toUpperCase()}</span>
 										<UpdateGroupModal />
 
 									</>
 								) : (
 									<>
-										<span>{getSender(user._id, selectedChat?.users)?.name}</span>
+										<span>{getSender(user._id, selectedChat?.users)?.name.toUpperCase()}</span>
 										<ProfileModal user={getSender(user._id, selectedChat?.users)} />
 									</>
 								)
@@ -152,94 +150,30 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 						) : (
 
 							<div style={{ position: "relative", height: "fit-content", overflow: "hidden", width: "100%" }}>
-								<MainContainer style={{border:"none"}}>
+								<MainContainer style={{ border: "none" }}>
 									<ChatContainer >
-										<MessageList style={{paddingTop:"2rem"}}>
-											<Message model={{
-												direction: "incoming",
-												message: "Hello my friend",
-												sentTime: "just now",
-												sender: "Joe"
-											}} />
-											<Message model={{
-												direction: "incoming",
-												message: "Hello my friend",
-												sentTime: "just now",
-												sender: "Joe"
-											}} />
-											<Message model={{
-												direction: "incoming",
-												message: "Hello my friend",
-												sentTime: "just now",
-												sender: "Joe"
-											}} />
-											<Message model={{
-												direction: "outgoing",
-												message: "Hello my friend",
-												sentTime: "just now",
-												sender: "Joe"
-											}} />
-											<Message model={{
-												direction: "outgoing",
-												message: "Hello my friend",
-												sentTime: "just now",
-												sender: "Joe"
-											}} />
-											<Message model={{
-												direction: "incoming",
-												message: "Hello my friend",
-												sentTime: "just now",
-												sender: "Joe"
-											}} />
-											<Message model={{
-												direction: "incoming",
-												message: "Hello my friend",
-												sentTime: "just now",
-												sender: "Joe"
-											}} />
-											<Message model={{
-												direction: "outgoing",
-												message: "Hello my friend",
-												sentTime: "just now",
-												sender: "Joe"
-											}} />
-											<Message model={{
-												direction: "outgoing",
-												message: "Hello my friend",
-												sentTime: "just now",
-												sender: "Joe"
-											}} />
-											<Message model={{
-												direction: "outgoing",
-												message: "Hello my friend",
-												sentTime: "just now",
-												sender: "Joe"
-											}} />
-											<Message model={{
-												direction: "outgoing",
-												message: "Hello my friend",
-												sentTime: "just now",
-												sender: "Joe"
-											}} />
-											<Message model={{
-												direction: "outgoing",
-												message: "Hello my friend",
-												sentTime: "just now",
-												sender: "Joe"
-											}} />
-											<Message model={{
-												direction: "incoming",
-												message: "Hello my friend",
-												sentTime: "just now",
-												sender: "Joe"
-											}} />
-											<Message model={{
-												direction: "outgoing",
-												message: "Hello my friend",
-												sentTime: "just now",
-												sender: "Joe"
-											}} />
-											
+										<MessageList>
+											{messages?.map((message) => (
+												message.senderId?._id == user._id ?
+													(
+														<Message model={{
+															direction: "outgoing",
+															message: message.content,
+															sentTime: "just now",
+															sender: message.senderId?.name
+														}} />
+													)
+													:
+													(
+														<Message model={{
+															direction: "incoming",
+															message: message.content,
+															sentTime: "just now",
+															sender: message.senderId?.name
+														}} />
+													)
+												))
+											}
 										</MessageList>
 										{/* <MessageInput placeholder="Type message here" /> */}
 									</ChatContainer>
