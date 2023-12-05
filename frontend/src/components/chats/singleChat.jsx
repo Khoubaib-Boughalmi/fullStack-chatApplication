@@ -12,6 +12,9 @@ import ProfileModal from "../miscellaneous/ProfileModal";
 import UpdateGroupModal from "../miscellaneous/UpdateGroupModal";
 const ENDPOINT = "http://localhost:8080"; // "https://test.herokuapp.com"; -> After deployment
 
+import { MainContainer, ChatContainer, MessageList, Message, MessageGroup, Avatar, MessageInput } from '@chatscope/chat-ui-kit-react';
+
+
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 	const [messages, setMessages] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -28,8 +31,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 		setNewMessage(e.target.value);
 	}
 
-	const fetchCurrentChatMessages = async() => {
-		if(!selectedChat) return ;
+	const fetchCurrentChatMessages = async () => {
+		if (!selectedChat) return;
 		setLoading(true);
 		try {
 			const config = {
@@ -53,8 +56,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 	}
 
 	const sendMessageFn = async (e) => {
-		if(newMessage.trim() == "")
-			return ;
+		if (newMessage.trim() == "")
+			return;
 		if (!newMessage || e.key !== "Enter")
 			return;
 		setLoading(true);
@@ -92,7 +95,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 	useEffect(() => {
 		fetchCurrentChatMessages();
 	}, [selectedChat])
-	
+
 	return (
 		<>
 			{selectedChat ? (
@@ -132,7 +135,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 						display="flex"
 						flexDir="column"
 						justifyContent="flex-end"
-						p={3}
 						bg="#E8E8E8"
 						w="100%"
 						h="100%"
@@ -148,8 +150,100 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 								margin="auto"
 							/>
 						) : (
-							<div className="messages">
-								{/*<ScrollableChat messages={messages} /> */}
+
+							<div style={{ position: "relative", height: "fit-content", overflow: "hidden", width: "100%" }}>
+								<MainContainer style={{border:"none"}}>
+									<ChatContainer >
+										<MessageList style={{paddingTop:"2rem"}}>
+											<Message model={{
+												direction: "incoming",
+												message: "Hello my friend",
+												sentTime: "just now",
+												sender: "Joe"
+											}} />
+											<Message model={{
+												direction: "incoming",
+												message: "Hello my friend",
+												sentTime: "just now",
+												sender: "Joe"
+											}} />
+											<Message model={{
+												direction: "incoming",
+												message: "Hello my friend",
+												sentTime: "just now",
+												sender: "Joe"
+											}} />
+											<Message model={{
+												direction: "outgoing",
+												message: "Hello my friend",
+												sentTime: "just now",
+												sender: "Joe"
+											}} />
+											<Message model={{
+												direction: "outgoing",
+												message: "Hello my friend",
+												sentTime: "just now",
+												sender: "Joe"
+											}} />
+											<Message model={{
+												direction: "incoming",
+												message: "Hello my friend",
+												sentTime: "just now",
+												sender: "Joe"
+											}} />
+											<Message model={{
+												direction: "incoming",
+												message: "Hello my friend",
+												sentTime: "just now",
+												sender: "Joe"
+											}} />
+											<Message model={{
+												direction: "outgoing",
+												message: "Hello my friend",
+												sentTime: "just now",
+												sender: "Joe"
+											}} />
+											<Message model={{
+												direction: "outgoing",
+												message: "Hello my friend",
+												sentTime: "just now",
+												sender: "Joe"
+											}} />
+											<Message model={{
+												direction: "outgoing",
+												message: "Hello my friend",
+												sentTime: "just now",
+												sender: "Joe"
+											}} />
+											<Message model={{
+												direction: "outgoing",
+												message: "Hello my friend",
+												sentTime: "just now",
+												sender: "Joe"
+											}} />
+											<Message model={{
+												direction: "outgoing",
+												message: "Hello my friend",
+												sentTime: "just now",
+												sender: "Joe"
+											}} />
+											<Message model={{
+												direction: "incoming",
+												message: "Hello my friend",
+												sentTime: "just now",
+												sender: "Joe"
+											}} />
+											<Message model={{
+												direction: "outgoing",
+												message: "Hello my friend",
+												sentTime: "just now",
+												sender: "Joe"
+											}} />
+											
+										</MessageList>
+										{/* <MessageInput placeholder="Type message here" /> */}
+									</ChatContainer>
+								</MainContainer>
 							</div>
 						)}
 
@@ -157,16 +251,15 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 							onKeyDown={sendMessageFn}
 							id="first-name"
 							isRequired
-							mt={3}
 						>
 							{istyping ? (
 								<div>
-									<Lottie
+									{/* <Lottie
 										options={""}
 										// height={50}
 										width={70}
 										style={{ marginBottom: 15, marginLeft: 0 }}
-									/>
+									/> */}
 								</div>
 							) : (
 								<></>
