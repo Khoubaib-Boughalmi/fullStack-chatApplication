@@ -44,10 +44,11 @@ io.on("connection", (socket) => {
     })
 
     socket.on("new message", (newMessage) => {
-        const chat = newMessage.chat;
+        const chat = newMessage.chatId;
+        console.log(newMessage)
         chat?.users?.forEach(user => {
-            if(user != userData._id)
-                socket.in(user._id).emit("message received", newMessage.content);
+            if(user != newMessage.senderId._id)
+                socket.in(user._id).emit("message received", newMessage);
         });
     })
 })

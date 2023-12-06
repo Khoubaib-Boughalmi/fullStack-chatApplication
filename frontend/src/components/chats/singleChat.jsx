@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { getSender } from "../../helpers/getSender";
-import { io } from "socket.io-client";
+import io from "socket.io-client";
 
 import { useChatContext } from "../../context/chatProvider";
 import ProfileModal from "../miscellaneous/ProfileModal";
@@ -46,8 +46,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
 	useEffect(() => {
 		socket.on("message received", (newMessage)=> {
-			if(newMessage._id == selectedChat.chat._id) //user currently has chat opened
-				setMessages([...messages, newMessage]);
+			console.log("newMessage ", newMessage);
+			setMessages([...messages, newMessage]);
 		})
 	})
 
@@ -97,8 +97,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 				},
 				config
 			);
-			socket.emit("new message", data);
 			setMessages([...messages, data]);
+			socket.emit("new message", data);
 		} catch (error) {
 			console.log(error);
 			toast({
@@ -174,9 +174,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 							/>
 						) : (
 
-							<div style={{ position: "relative", height: "fit-content", overflow: "hidden", width: "100%" }}>
+							<div style={{ position: "relative", height: "fit-content", overflowY: "scroll",width: "100%" }}>
 								<MainContainer style={{ border: "none" }}>
-									<ChatContainer >
+									<ChatContainer>
 										<MessageList>
 											{messages?.map((message) => (
 												message.senderId?._id == user._id ?
