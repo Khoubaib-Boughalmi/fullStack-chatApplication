@@ -13,7 +13,7 @@ import ProfileModal from "../miscellaneous/ProfileModal";
 import UpdateGroupModal from "../miscellaneous/UpdateGroupModal";
 
 const ENDPOINT = "http://localhost:8080"; // "https://test.herokuapp.com"; -> After deployment
-let server;
+let socket;
 
 import { MainContainer, ChatContainer, MessageList, Message, MessageGroup, Avatar, MessageInput } from '@chatscope/chat-ui-kit-react';
 
@@ -23,6 +23,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 	const [loading, setLoading] = useState(false);
 	const [newMessage, setNewMessage] = useState("");
 	const [socketConnected, setSocketConnected] = useState(false);
+	const [selectedChatComapre, setSelectedChatComapre] = useState(false);
 	const [typing, setTyping] = useState(false);
 	const [istyping, setIsTyping] = useState(false);
 	const toast = useToast();
@@ -33,6 +34,22 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 	const typingHandlerFn = (e) => {
 		setNewMessage(e.target.value);
 	}
+
+	useEffect(() => {
+		socket = io(ENDPOINT);
+		socket.emit("setup", user);
+		socket.on("connection",() => {
+			setSocketConnected(true);
+		});
+
+	}, [])
+
+	useEffect(() => {
+		socket.on("message received", (newMessage)=> {
+			if(newMessage._id == selectedChat.chat._id) //user currently has chat opened
+				setMessages([...messages, newMessage]);
+		})
+	})
 
 	const fetchCurrentChatMessages = async () => {
 		if (!selectedChat) return;
@@ -45,7 +62,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 			}
 			const { data } = await axios.get(`http://localhost:8080/api/message/${selectedChat._id}`, config);
 			setMessages(data);
+			socket.emit("join room", selectedChat._id);
 		} catch (error) {
+			console.log(error);
 			toast({
 				title: "Unable to fetch message",
 				description: "Please try again",
@@ -78,6 +97,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 				},
 				config
 			);
+			socket.emit("new message", data);
 			setMessages([...messages, data]);
 		} catch (error) {
 			console.log(error);
@@ -95,11 +115,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
 	useEffect(() => {
 		fetchCurrentChatMessages();
+		// selectedChatComapre = selectedChat;
 	}, [selectedChat])
-
-	useEffect(() => {
-		server = io(ENDPOINT);
-	}, [])
 
 	return (
 		<>
