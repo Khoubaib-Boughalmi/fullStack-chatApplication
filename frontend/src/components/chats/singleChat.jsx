@@ -12,7 +12,7 @@ import { useChatContext } from "../../context/chatProvider";
 import ProfileModal from "../miscellaneous/ProfileModal";
 import UpdateGroupModal from "../miscellaneous/UpdateGroupModal";
 
-const ENDPOINT = "http://localhost:8080"; // "https://test.herokuapp.com"; -> After deployment
+const ENDPOINT = "http://10.11.2.4:8080"; // "https://test.herokuapp.com"; -> After deployment
 let socket;
 
 import { MainContainer, ChatContainer, MessageList, Message, MessageGroup, Avatar, MessageInput } from '@chatscope/chat-ui-kit-react';
@@ -60,7 +60,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 					Authorization: `Bearer ${user.token}`
 				}
 			}
-			const { data } = await axios.get(`http://localhost:8080/api/message/${selectedChat._id}`, config);
+			const { data } = await axios.get(`http://10.11.2.4:8080/api/message/${selectedChat._id}`, config);
 			setMessages(data);
 			socket.emit("join room", selectedChat._id);
 		} catch (error) {
@@ -90,7 +90,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 			}
 			setNewMessage("");
 			const { data } = await axios.post(
-				"http://localhost:8080/api/message",
+				"http://10.11.2.4:8080/api/message",
 				{
 					"chatId": selectedChat._id,
 					"content": newMessage
@@ -161,7 +161,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 						w="100%"
 						h="100%"
 						borderRadius="lg"
-						overflowY="hidden"
+						overflow="hidden"
 						background="transparent"
 					>
 						{loading ? (
@@ -174,7 +174,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 							/>
 						) : (
 
-							<div style={{ position: "relative", height: "fit-content", overflowY: "scroll",width: "100%" }}>
+							<div style={{ position: "relative", height: "fit-content", overflowY: "scroll",width: "102%", paddingRight:"1rem" }}>
 								<MainContainer style={{ border: "none" }}>
 									<ChatContainer>
 										<MessageList>
