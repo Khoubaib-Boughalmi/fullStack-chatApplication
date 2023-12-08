@@ -212,6 +212,15 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 														sentTime: "just now",
 														sender: message.senderId?.name
 													}}>
+														{
+
+															isLastMessage(messages, message) ? (
+																<Avatar src={message.senderId?.avatar} style={{}} />
+															)
+																: (
+																	<Avatar src="" style={{ display: "none" }} />
+																)
+														}
 													</Message>
 											))
 											}
