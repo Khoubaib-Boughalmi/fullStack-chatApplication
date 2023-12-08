@@ -35,17 +35,33 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 		setNewMessage(e.target.value);
 	}
 
+	const isLastMessage = (messages, message) => {
+		for (let index = 0; index < messages.length; index++) {
+			if (index == messages.length - 1)
+				return (1);
+			if (messages[index]._id == message._id) {
+				if (messages[index + 1].senderId._id != message.senderId._id) {
+					return (1);
+				}
+				else return (0);
+			}
+		}
+		console.log(messages);
+		console.log(message);
+		return (1);
+	}
+
 	useEffect(() => {
 		socket = io(ENDPOINT);
 		socket.emit("setup", user);
-		socket.on("connection",() => {
+		socket.on("connection", () => {
 			setSocketConnected(true);
 		});
 
 	}, [])
 
 	useEffect(() => {
-		socket.on("message received", (newMessage)=> {
+		socket.on("message received", (newMessage) => {
 			console.log("newMessage ", newMessage);
 			setMessages([...messages, newMessage]);
 		})
@@ -174,7 +190,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 							/>
 						) : (
 
-							<div style={{ position: "relative", height: "fit-content", overflowY: "scroll",width: "102%", paddingRight:"1rem" }}>
+							<div style={{ position: "relative", height: "fit-content", overflowY: "scroll", width: "102%", paddingRight: "1rem" }}>
 								<MainContainer style={{ border: "none" }}>
 									<ChatContainer>
 										<MessageList>
@@ -189,15 +205,15 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 														}} />
 													)
 													:
-													(
-														<Message model={{
-															direction: "incoming",
-															message: message.content,
-															sentTime: "just now",
-															sender: message.senderId?.name
-														}} />
-													)
-												))
+
+													< Message model={{
+														direction: "incoming",
+														message: message.content,
+														sentTime: "just now",
+														sender: message.senderId?.name
+													}}>
+													</Message>
+											))
 											}
 										</MessageList>
 										{/* <MessageInput placeholder="Type message here" /> */}
@@ -239,7 +255,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 						Click on a user to start chatting
 					</Text>
 				</Box>
-			)}
+			)
+			}
 		</>
 	);
 };
