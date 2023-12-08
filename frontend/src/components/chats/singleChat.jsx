@@ -40,14 +40,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 			if (index == messages.length - 1)
 				return (1);
 			if (messages[index]._id == message._id) {
-				if (messages[index + 1].senderId._id != message.senderId._id) {
+				if (messages[index + 1]?.senderId?._id != message?.senderId?._id) {
 					return (1);
 				}
 				else return (0);
 			}
 		}
-		console.log(messages);
-		console.log(message);
 		return (1);
 	}
 
@@ -77,7 +75,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 				}
 			}
 			const { data } = await axios.get(`http://10.11.2.4:8080/api/message/${selectedChat._id}`, config);
-			setMessages(data);
+			setMessages([...messages, ...data]);
 			socket.emit("join room", selectedChat._id);
 		} catch (error) {
 			console.log(error);
@@ -205,7 +203,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 														}} />
 													)
 													:
-
 													< Message model={{
 														direction: "incoming",
 														message: message.content,
