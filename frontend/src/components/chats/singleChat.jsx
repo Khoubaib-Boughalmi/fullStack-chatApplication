@@ -60,7 +60,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
 	useEffect(() => {
 		socket.on("message received", (newMessage) => {
-			console.log("newMessage ", newMessage);
 			setMessages([...messages, newMessage]);
 		})
 	})
@@ -68,6 +67,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 	const fetchCurrentChatMessages = async () => {
 		if (!selectedChat) return;
 		setLoading(true);
+		setMessages([]);
 		try {
 			const config = {
 				headers: {
@@ -75,6 +75,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 				}
 			}
 			const { data } = await axios.get(`http://10.11.2.4:8080/api/message/${selectedChat._id}`, config);
+			// if(!data.length) setMessages([]);
+			// else
 			setMessages([...messages, ...data]);
 			socket.emit("join room", selectedChat._id);
 		} catch (error) {
@@ -128,7 +130,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 	}
 
 	useEffect(() => {
+		// setMessages([""]);
 		fetchCurrentChatMessages();
+		console.log("i  was hheeeeree");
 		// selectedChatComapre = selectedChat;
 	}, [selectedChat])
 
