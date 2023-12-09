@@ -106,7 +106,7 @@ const MyChats = ({ fetchAgain }) => {
                       chat?.lastMessage?.senderId?.name &&
                       <Text fontSize="15px">
                         <span>{chat?.lastMessage?.senderId?.name}</span>
-                        <span>: </span> 
+                        <span>: </span>
                         <span>{chat?.lastMessage?.content}</span>
                       </Text>
                     }

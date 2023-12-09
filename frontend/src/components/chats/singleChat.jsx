@@ -7,7 +7,7 @@ import axios from "axios";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { getSender } from "../../helpers/getSender";
 import io from "socket.io-client";
-
+import { updateLastMessage } from "../../helpers/updateLastMsgChatList";
 import { useChatContext } from "../../context/chatProvider";
 import ProfileModal from "../miscellaneous/ProfileModal";
 import UpdateGroupModal from "../miscellaneous/UpdateGroupModal";
@@ -29,7 +29,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 	const toast = useToast();
 
 
-	const { selectedChat, setSelectedChat, user, notification, setNotification } = useChatContext();
+	const { selectedChat, setSelectedChat, user, chats, setChats, notification, setNotification } = useChatContext();
 
 	const typingHandlerFn = (e) => {
 		setNewMessage(e.target.value);
@@ -61,6 +61,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 	useEffect(() => {
 		socket.on("message received", (newMessage) => {
 			setMessages([...messages, newMessage]);
+			//from newMessage chatId look for the chat that corresponds to it in chats object and update the last message id with the new 
+			updateLastMessage(chats, setChats, newMessage)
 		})
 	})
 
@@ -118,6 +120,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 				config
 			);
 			setMessages([...messages, data]);
+			// socket.emit("new message", (data) => {
+			// 	setMessages([...messages, data]);
+			// 	//from data chatId look for the chat that corresponds to it in chats object and update the last message id with the new 
+			updateLastMessage(chats, setChats, data)
 			socket.emit("new message", data);
 		} catch (error) {
 			console.log(error);
@@ -200,46 +206,46 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 								<MainContainer style={{ border: "none" }}>
 									<ChatContainer>
 										<MessageList>
-										{messages?.map((message) => (
-											message.chatId?._id === selectedChat?._id ? (
-												message.senderId?._id === user._id ? (
-													<Message
-														model={{
-															direction: "outgoing",
-															message: message.content,
-															sentTime: "just now",
-															sender: message.senderId?.name
-														}}
-													/>
-												) : (
-													isLastMessage(messages, message) ? (
-													<Message
-														model={{
-															direction: "incoming",
-															message: message.content,
-															sentTime: "just now",
-															sender: message.senderId?.name
-														}}
-														style={{marginBottom: "20px"}}
-													>
-													<Avatar src={message.senderId?.avatar} style={{}} />
-													</Message>) : (
+											{messages?.map((message) => (
+												message.chatId?._id === selectedChat?._id ? (
+													message.senderId?._id === user._id ? (
 														<Message
-														model={{
-															direction: "incoming",
-															message: message.content,
-															sentTime: "just now",
-															sender: message.senderId?.name
-														}}
-													>
-													<Avatar src={message.senderId?.avatar} style={{display: "none"}} />
-													</Message>
+															model={{
+																direction: "outgoing",
+																message: message.content,
+																sentTime: "just now",
+																sender: message.senderId?.name
+															}}
+														/>
+													) : (
+														isLastMessage(messages, message) ? (
+															<Message
+																model={{
+																	direction: "incoming",
+																	message: message.content,
+																	sentTime: "just now",
+																	sender: message.senderId?.name
+																}}
+																style={{ marginBottom: "20px" }}
+															>
+																<Avatar src={message.senderId?.avatar} style={{}} />
+															</Message>) : (
+															<Message
+																model={{
+																	direction: "incoming",
+																	message: message.content,
+																	sentTime: "just now",
+																	sender: message.senderId?.name
+																}}
+															>
+																<Avatar src={message.senderId?.avatar} style={{ display: "none" }} />
+															</Message>
+														)
+
 													)
-													
-												)
-											) : ""
-										))}
-										
+												) : ""
+											))}
+
 										</MessageList>
 										{/* <MessageInput placeholder="Type message here" /> */}
 									</ChatContainer>
