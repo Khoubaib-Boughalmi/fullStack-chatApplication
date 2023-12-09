@@ -60,7 +60,7 @@ function SideDrawer() {
 					Authorization: `Bearer ${user.token}`
 				}
 			}
-			const { data } = await axios.get(`http://10.11.2.4:8080/api/user/?search=${value}`, config);
+			const { data } = await axios.get(`http://10.12.11.4:8080/api/user/?search=${value}`, config);
 			setSearchResult(data);
 		} catch (error) {
 			setSearchResult([]);
@@ -85,7 +85,7 @@ function SideDrawer() {
 		}
 		setLoadingChat(true);
 		try {
-			const { data } = await axios.post("http://10.11.2.4:8080/api/chat", { userId }, config);
+			const { data } = await axios.post("http://10.12.11.4:8080/api/chat", { userId }, config);
 			
 			//add the current selected chat to the global chat UI
 			if (!chats.find((chat) => chat._id == data._id)) {

@@ -27,7 +27,7 @@ const Signup = () => {
             })
         }
         try {
-            const response = await axios.post("http://10.11.2.4:8080/api/user/", {name, email, password, avatar});
+            const response = await axios.post("http://10.12.11.4:8080/api/user/", {name, email, password, avatar});
             setIsLoading(false);
             setEmail("");setName("");setPassword(""),setAvatar("");
             return toast({

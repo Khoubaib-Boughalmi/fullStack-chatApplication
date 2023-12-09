@@ -12,7 +12,7 @@ import { useChatContext } from "../../context/chatProvider";
 import ProfileModal from "../miscellaneous/ProfileModal";
 import UpdateGroupModal from "../miscellaneous/UpdateGroupModal";
 
-const ENDPOINT = "http://10.11.2.4:8080"; // "https://test.herokuapp.com"; -> After deployment
+const ENDPOINT = "http://10.12.11.4:8080"; // "https://test.herokuapp.com"; -> After deployment
 let socket;
 
 import { MainContainer, ChatContainer, MessageList, Message, MessageGroup, Avatar, MessageInput } from '@chatscope/chat-ui-kit-react';
@@ -66,20 +66,24 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
 	const fetchCurrentChatMessages = async () => {
 		if (!selectedChat) return;
+		console.log("i changed here");
 		setLoading(true);
-		setMessages([]);
 		try {
 			const config = {
 				headers: {
 					Authorization: `Bearer ${user.token}`
 				}
 			}
-			const { data } = await axios.get(`http://10.11.2.4:8080/api/message/${selectedChat._id}`, config);
+			const { data } = await axios.get(`http://10.12.11.4:8080/api/message/${selectedChat._id}`, config);
 			// if(!data.length) setMessages([]);
 			// else
-			setMessages([...messages, ...data]);
 			socket.emit("join room", selectedChat._id);
+			// if(messages.length)
+			// 	setMessages([...messages, ...data]);
+			// else
+			setMessages(data);
 		} catch (error) {
+			// setMessages([]);
 			console.log(error);
 			toast({
 				title: "Unable to fetch message",
@@ -106,7 +110,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 			}
 			setNewMessage("");
 			const { data } = await axios.post(
-				"http://10.11.2.4:8080/api/message",
+				"http://10.12.11.4:8080/api/message",
 				{
 					"chatId": selectedChat._id,
 					"content": newMessage
@@ -196,35 +200,36 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 								<MainContainer style={{ border: "none" }}>
 									<ChatContainer>
 										<MessageList>
-											{messages?.map((message) => (
-												message.senderId?._id == user._id ?
-													(
-														<Message model={{
+										{messages?.map((message) => (
+											message.chatId?._id === selectedChat?._id ? (
+												message.senderId?._id === user._id ? (
+													<Message
+														model={{
 															direction: "outgoing",
 															message: message.content,
 															sentTime: "just now",
 															sender: message.senderId?.name
-														}} />
-													)
-													:
-													< Message model={{
-														direction: "incoming",
-														message: message.content,
-														sentTime: "just now",
-														sender: message.senderId?.name
-													}}>
-														{
-
-															isLastMessage(messages, message) ? (
-																<Avatar src={message.senderId?.avatar} style={{}} />
-															)
-																: (
-																	<Avatar src="" style={{ display: "none" }} />
-																)
-														}
+														}}
+													/>
+												) : (
+													<Message
+														model={{
+															direction: "incoming",
+															message: message.content,
+															sentTime: "just now",
+															sender: message.senderId?.name
+														}}
+													>
+														{isLastMessage(messages, message) ? (
+															<Avatar src={message.senderId?.avatar} style={{}} />
+														) : (
+															<Avatar src="" style={{ display: "none" }} />
+														)}
 													</Message>
-											))
-											}
+												)
+											) : ""
+										))}
+										
 										</MessageList>
 										{/* <MessageInput placeholder="Type message here" /> */}
 									</ChatContainer>

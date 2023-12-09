@@ -33,7 +33,7 @@ const Login = () => {
         }
         setIsLoading(true);
         try {
-            const user = await axios.post("http://10.11.2.4:8080/api/user/login", {email, password});
+            const user = await axios.post("http://10.12.11.4:8080/api/user/login", {email, password});
             toast({
                 title: "Connected Successfully",
                 description: "Welcome Back",

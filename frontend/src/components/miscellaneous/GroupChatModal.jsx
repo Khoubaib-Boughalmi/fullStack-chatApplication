@@ -48,7 +48,7 @@ const handleSubmitFn = async() => {
 		}
 	}
 	try {
-		const { data } = await axios.post("http://10.11.2.4:8080/api/chat/group", {
+		const { data } = await axios.post("http://10.12.11.4:8080/api/chat/group", {
 			groupName: groupChatName,
 			groupUsers: JSON.stringify(selectedUsers.map((u) => u._id)),
 			groupAdmin: user._id,
@@ -120,7 +120,7 @@ const handleSearchFn = async(value) => {
 	}
 	try {
 		setLoading(true);
-		const {data} = await axios.get(`http://10.11.2.4:8080/api/user?search=${value}`, config);
+		const {data} = await axios.get(`http://10.12.11.4:8080/api/user?search=${value}`, config);
 		setSearchResult(data);	
 		console.log(searchResult);
 	} catch (error) {
