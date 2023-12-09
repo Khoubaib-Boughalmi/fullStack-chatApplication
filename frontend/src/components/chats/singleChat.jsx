@@ -40,7 +40,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 			if (index == messages.length - 1)
 				return (1);
 			if (messages[index]._id == message._id) {
-				if (messages[index + 1]?.senderId?._id != message?.senderId?._id) {
+				if ((messages[index + 1]?.senderId?._id != message?.senderId?._id) || (messages[index + 1]?.chatId?._id != message?.chatId?._id)) {
 					return (1);
 				}
 				else return (0);
@@ -212,6 +212,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 														}}
 													/>
 												) : (
+													isLastMessage(messages, message) ? (
 													<Message
 														model={{
 															direction: "incoming",
@@ -219,13 +220,22 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 															sentTime: "just now",
 															sender: message.senderId?.name
 														}}
+														style={{marginBottom: "20px"}}
 													>
-														{isLastMessage(messages, message) ? (
-															<Avatar src={message.senderId?.avatar} style={{}} />
-														) : (
-															<Avatar src="" style={{ display: "none" }} />
-														)}
+													<Avatar src={message.senderId?.avatar} style={{}} />
+													</Message>) : (
+														<Message
+														model={{
+															direction: "incoming",
+															message: message.content,
+															sentTime: "just now",
+															sender: message.senderId?.name
+														}}
+													>
+													<Avatar src={message.senderId?.avatar} style={{display: "none"}} />
 													</Message>
+													)
+													
 												)
 											) : ""
 										))}
