@@ -70,7 +70,7 @@ const UpdateGroupModal = ({ children }) => {
         }
         try {
             setLoading(true);
-            const { data } = await axios.get(`http://10.12.11.4:8080/api/user?search=${value}`, config);
+            const { data } = await axios.get(`http://localhost:8080/api/user?search=${value}`, config);
             setSearchResult(data);
             console.log(searchResult);
         } catch (error) {
@@ -135,7 +135,7 @@ const UpdateGroupModal = ({ children }) => {
                     }
                 }
                 const { data } = await axios.put(
-                    "http://10.12.11.4:8080/api/chat/group",
+                    `http://localhost:8080/api/chat/group`,
                     {
                         newGroupName: newGroupName,
                         groupId: selectedChat._id
@@ -177,7 +177,7 @@ const UpdateGroupModal = ({ children }) => {
             }
             usersIds = JSON.stringify(usersIds);
             const { data } = await axios.put(
-                "http://10.12.11.4:8080/api/chat/group/members",
+                `http://localhost:8080/api/chat/group/members`,
                 {
                     usersIds: usersIds,
                     groupId: selectedChat._id

@@ -21,7 +21,7 @@ const MyChats = ({ fetchAgain }) => {
       }
     }
     try {
-      const { data } = await axios.get("http://10.12.11.4:8080/api/chat", config);
+      const { data } = await axios.get(`http://localhost:8080/api/chat`, config);
       setChats(data);
     } catch (error) {
       console.log(error);

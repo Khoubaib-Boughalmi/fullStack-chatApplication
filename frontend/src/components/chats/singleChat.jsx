@@ -12,7 +12,7 @@ import { useChatContext } from "../../context/chatProvider";
 import ProfileModal from "../miscellaneous/ProfileModal";
 import UpdateGroupModal from "../miscellaneous/UpdateGroupModal";
 
-const ENDPOINT = "http://10.12.11.4:8080"; // "https://test.herokuapp.com"; -> After deployment
+const ENDPOINT = `http://localhost:8080`; // "https://test.herokuapp.com"; -> After deployment
 let socket;
 
 import { MainContainer, ChatContainer, MessageList, Message, MessageGroup, Avatar, MessageInput } from '@chatscope/chat-ui-kit-react';
@@ -76,7 +76,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 					Authorization: `Bearer ${user.token}`
 				}
 			}
-			const { data } = await axios.get(`http://10.12.11.4:8080/api/message/${selectedChat._id}`, config);
+			const { data } = await axios.get(`http://localhost:8080/api/message/${selectedChat._id}`, config);
 			// if(!data.length) setMessages([]);
 			// else
 			socket.emit("join room", selectedChat._id);
@@ -112,7 +112,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 			}
 			setNewMessage("");
 			const { data } = await axios.post(
-				"http://10.12.11.4:8080/api/message",
+				`http://localhost:8080/api/message`,
 				{
 					"chatId": selectedChat._id,
 					"content": newMessage

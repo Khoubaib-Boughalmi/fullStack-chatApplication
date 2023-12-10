@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { useChatContext } from '../../context/chatProvider';
-
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -33,7 +32,7 @@ const Login = () => {
         }
         setIsLoading(true);
         try {
-            const user = await axios.post("http://10.12.11.4:8080/api/user/login", {email, password});
+            const user = await axios.post(`http://localhost:8080/api/user/login`, {email, password});
             toast({
                 title: "Connected Successfully",
                 description: "Welcome Back",
